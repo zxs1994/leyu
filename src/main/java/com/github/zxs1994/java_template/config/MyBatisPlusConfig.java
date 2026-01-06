@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@MapperScan("${project.base-package}.mapper") // 扫描 Mapper 包
+@PropertySource("classpath:project.properties")
+@MapperScan(basePackages = "${project.base-package}.mapper")
 public class MyBatisPlusConfig {
 
     /**

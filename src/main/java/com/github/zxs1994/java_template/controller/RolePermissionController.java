@@ -12,11 +12,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * <p>
- * RolePermissionController 控制器
+ * 角色-权限关联表 Controller 控制器
  * </p>
  *
  * @author xusheng
- * @since 2026-01-04 17:32:23
+ * @since 2026-01-06 09:59:01
  */
 
 @RestController
@@ -45,9 +45,10 @@ public class RolePermissionController {
         return rolePermissionService.save(rolePermission);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "更新 角色-权限关联")
-    public boolean update(@RequestBody RolePermission rolePermission) {
+    public boolean update(@PathVariable Long id, @RequestBody RolePermission rolePermission) {
+        rolePermission.setId(id);
         return rolePermissionService.updateById(rolePermission);
     }
 

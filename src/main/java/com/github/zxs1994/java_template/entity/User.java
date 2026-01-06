@@ -12,7 +12,7 @@ import com.example.template.common.BaseEntity;
  * </p>
  *
  * @author xusheng
- * @since 2026-01-04 17:53:21
+ * @since 2026-01-06 09:59:56
  */
 
 @Data
@@ -21,7 +21,7 @@ import com.example.template.common.BaseEntity;
 @Schema(description = "用户表")
 public class User extends BaseEntity {
 
-    @Schema(description = "")
+    @Schema(description = "邮箱")
     private String email;
 
     @Schema(description = "用户名")

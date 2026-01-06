@@ -8,23 +8,23 @@ import com.example.template.common.BaseEntity;
 
 /**
  * <p>
- * UserRole 实体
+ * 权限表 实体
  * </p>
  *
  * @author xusheng
- * @since 2026-01-04 17:53:21
+ * @since 2026-01-06 09:59:56
  */
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("user_role")
-@Schema(description = "用户-角色关联表")
-public class UserRole extends BaseEntity {
+@TableName("permission")
+@Schema(description = "权限表")
+public class Permission extends BaseEntity {
 
-    @Schema(description = "用户ID")
-    private Long userId;
+    @Schema(description = "权限名")
+    private String name;
 
-    @Schema(description = "角色ID")
-    private Long roleId;
+    @Schema(description = "权限编码")
+    private String code;
 
 }

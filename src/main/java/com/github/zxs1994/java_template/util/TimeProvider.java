@@ -11,7 +11,7 @@ public final class TimeProvider {
     private TimeProvider() {}
 
     /**
-     * 确保东八区
+     * 确保北京时间
      */
     public static OffsetDateTime now() {
         return OffsetDateTime.now(CN_OFFSET);

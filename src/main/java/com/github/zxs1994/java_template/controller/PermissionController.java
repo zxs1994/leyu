@@ -12,11 +12,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * <p>
- * PermissionController 控制器
+ * 权限表 Controller 控制器
  * </p>
  *
  * @author xusheng
- * @since 2026-01-04 17:32:23
+ * @since 2026-01-06 09:59:00
  */
 
 @RestController
@@ -45,9 +45,10 @@ public class PermissionController {
         return permissionService.save(permission);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "更新 权限")
-    public boolean update(@RequestBody Permission permission) {
+    public boolean update(@PathVariable Long id, @RequestBody Permission permission) {
+        permission.setId(id);
         return permissionService.updateById(permission);
     }
 

@@ -45,9 +45,10 @@ public class UserController {
         return userService.save(user);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "更新 用户")
-    public boolean update(@RequestBody User user) {
+    public boolean update(@PathVariable Long id, @RequestBody User user) {
+        user.setId(id);
         user.setPassword(null);
         return userService.updateById(user);
     }

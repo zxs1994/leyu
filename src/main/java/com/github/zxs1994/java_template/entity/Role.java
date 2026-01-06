@@ -8,11 +8,11 @@ import com.example.template.common.BaseEntity;
 
 /**
  * <p>
- * Role 实体
+ * 角色表 实体
  * </p>
  *
  * @author xusheng
- * @since 2026-01-04 17:53:21
+ * @since 2026-01-06 09:59:56
  */
 
 @Data

@@ -59,9 +59,10 @@ public class ${entity}Controller {
         return ${entityLower}Service.save(${entityLower});
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "更新 ${entityComment}")
-    public boolean update(@RequestBody ${entity} ${entityLower}) {
+    public boolean update(@PathVariable Long id, @RequestBody ${entity} ${entityLower}) {
+        ${entityLower}.setId(id);
         return ${entityLower}Service.updateById(${entityLower});
     }
 

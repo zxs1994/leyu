@@ -11,7 +11,7 @@ import java.util.Properties;
 public class CodeGenerator {
 
     public static void main(String[] args) throws IOException {
-        Properties devProps = LoadProperties.load("src/main/resources/application-dev.properties");
+        Properties devProps = LoadProperties.loadDev();
 
         String url = devProps.getProperty("spring.datasource.url");
         String username = devProps.getProperty("spring.datasource.username");

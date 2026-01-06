@@ -1,6 +1,8 @@
 package com.example.template.config;
 
 import com.example.template.common.NoApiWrap;
+import com.example.template.util.LoadProperties;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.media.IntegerSchema;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Properties;
 
 @Configuration
 public class OpenApiConfig {
@@ -157,8 +160,13 @@ public class OpenApiConfig {
                 .bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER)
                 .name("Authorization");
-
+        Properties ProjectProps = LoadProperties.loadProject();
         return new OpenAPI()
+                .info(new Info()
+                        .title(ProjectProps.getProperty("project.name"))
+                        .version(ProjectProps.getProperty("project.version"))
+                        .description(ProjectProps.getProperty("project.description"))
+                )
                 .components(new Components().addSecuritySchemes("jwt", securityScheme));
     }
 

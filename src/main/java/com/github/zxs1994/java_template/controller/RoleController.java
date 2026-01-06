@@ -12,11 +12,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * <p>
- * RoleController 控制器
+ * 角色表 Controller 控制器
  * </p>
  *
  * @author xusheng
- * @since 2026-01-04 17:32:23
+ * @since 2026-01-06 09:59:01
  */
 
 @RestController
@@ -45,9 +45,10 @@ public class RoleController {
         return roleService.save(role);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "更新 角色")
-    public boolean update(@RequestBody Role role) {
+    public boolean update(@PathVariable Long id, @RequestBody Role role) {
+        role.setId(id);
         return roleService.updateById(role);
     }
 
