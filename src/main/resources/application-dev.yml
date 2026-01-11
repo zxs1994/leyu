@@ -15,16 +15,37 @@ logging:
 
 # Swagger 配置
 springdoc:
-  api-docs:
-    enabled: true
   swagger-ui:
+    # 是否启用 Swagger UI（一般只在 dev / test 环境开启）
     enabled: true
+
+    # 文档展开方式
+    # none  : 所有接口默认折叠（推荐，页面最干净）
+    # list  : 只展开接口列表
+    # full  : 展开所有接口详情（接口多时非常乱）
     doc-expansion: none
+
+    # 接口排序方式
+    # alpha : 按接口路径字母排序
+    # method: 按 HTTP 方法排序（DELETE -> GET → POST → PUT）
     operations-sorter: alpha
-    tags-sorter: alpha
+
+    # Tag（Controller 分组）排序方式
+    # alpha : 按 Tag 名字母排序（推荐）
+    tags-sorter: Tag
+
+    # 是否在刷新页面后保留 Authorization 中输入的 Token
+    # true  : Token 存在 localStorage，刷新不丢（强烈推荐）
+    # false : 刷新页面 Token 会丢失（默认行为）
+    persist-authorization: true
+
+    # 自定义配置：是否启用接口分组（GroupedOpenApi）
+    # true  : 使用系统管理 / 业务接口等分组
+    # false : 所有接口放在一个文档中
+    group-enabled: true
 
 # 权限扫描开关（⚠️ 仅用于开发/初始化）
 # true  ：启动时扫描 Controller 并同步权限到数据库（可能覆盖/恢复权限数据）
 # false ：不自动扫描，需手动触发权限同步（推荐）
-permission:
-  scan-on-startup: false
+sys-permission:
+  scan-on-startup: true

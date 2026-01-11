@@ -17,12 +17,10 @@ security:
     - /swagger-ui.html
     - /v3/api-docs/**
     - /favicon.ico
-    - /enums/**
+    - /common/**
     - /auth/**
-    - /user/register
 
 # JWT 配置
 jwt:
   secret: xusheng-secret-key-please-change-to-strong-key
-  expire-days: 1
-  default-role: ROLE_USER
+  expire-days: 3

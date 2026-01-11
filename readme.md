@@ -122,6 +122,46 @@ java -Xms512m -Xmx1g -jar target/java_template-1.0.0.jar --spring.profiles.activ
 - 枚举统一接口：GET /enums/all
 - 角色、权限、用户-角色、角色-权限等接口均有对应 CRUD
 
+---
+
+
+## 权限管理（RBAC） 🔐
+
+**概述**：
+   - 新增基于角色-权限的权限管理，主要数据库表为 `sys__permission`（权限）和 `sys__role_permission`（角色-权限关联）。
+   - **权限表无需手动维护，所有变更均由扫描器自动完成，手动更改会被覆盖或逻辑删除。**
+   - 支持通过启动时扫描 Controller 自动同步权限到数据库（可选）。
+
+**自动扫描与初始化**：
+   - `SysPermissionScanner`（仅在 `dev` profile 生效，类上有 `@Profile("dev")`）可在启动时扫描 `@RestController` 的接口并同步到 `sys__permission`。默认不开启，配置项：
+      - `sys-permission.scan-on-startup: false`（位于 `application-dev.yml`）
+   - 项目会初始化一组**全局权限**：`ALL`, `ALL_GET`, `ALL_POST`, `ALL_PUT`, `ALL_DELETE`，用于快速控制全局访问。
+   - **路由自动生成：** 数据库表名如 `sys__user` 会自动生成 `/sys/user` 路由，`__` 是分隔约定，表注释如 `COMMENT='系统--用户表'` 也会自动用于接口分组和文档。
+
+**白名单 & 授权判断**：
+   - 白名单通过 `security.permit-urls` 配置（`SecurityProperties`）配置路径模式（支持 Ant 风格），示例在 `application-dev.yml` 中可配置。
+   - 权限校验流程（`SysPermissionFilter`）：
+      1. 首先匹配白名单（若匹配则放行，白名单接口不加锁，文档和分组也会完整展示）。
+      2. 检查登录状态（未登录返回 401）。
+      3. 查询用户拥有的权限并按 HTTP 方法与路径进行匹配（匹配则放行，否则返回 403）。
+
+**相关 API（权限）**：
+   - 权限列表：GET `/sys/permission`
+   - 获取权限：GET `/sys/permission/{id}`
+   - 新增权限：POST `/sys/permission` （JSON body）
+   - 更新权限：PUT `/sys/permission/{id}` （JSON body）
+   - 删除权限：DELETE `/sys/permission/{id}`
+   - 分页：GET `/sys/permission/page?page=1&size=10`
+
+**使用建议**：
+   - 开发时可临时打开 `sys-permission.scan-on-startup: true` 来初始化或同步权限，**慎用**（可能覆盖已有权限数据）。
+   - 扫描会排除 Swagger/OpenAPI 相关 Controller（类名包含 `swagger` 或 `openapi`）。
+   - `security.permit-urls` 支持 Ant 风格路径（例如 `/public/**`）。
+
+---
+
+示例 curl（列出所有用户）：
+
 
 示例 curl（列出所有用户）：
 ```bash
@@ -141,10 +181,17 @@ curl -X GET http://localhost:8088/user
 
 ---
 
+
 ## 文档（Swagger / OpenAPI） 📚
 
 - 启动后访问：`/swagger-ui.html` 或 `/swagger-ui/index.html`（springdoc 默认路径）  
 - 原始 JSON：`/v3/api-docs`
+
+### Swagger 极致体验亮点
+
+- **分组、接口、响应结构全部自动生成，ApiResponse 结构和分组文档自动展示**。
+- **白名单接口（如登录、注册、公开接口）无需登录即可访问，且文档中会完整显示，不会被权限拦截隐藏。**
+- **所有接口分组、路径、注释均自动从数据库表名、表注释、Controller 注解生成，无需手写维护。**
 
 ---
 

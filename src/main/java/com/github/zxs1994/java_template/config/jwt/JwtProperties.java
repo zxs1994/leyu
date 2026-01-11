@@ -22,12 +22,6 @@ public class JwtProperties {
     private int expireDays;
 
     /**
-     * 默认角色
-     */
-    @Setter
-    private String defaultRole;
-
-    /**
      * 过期毫秒数（计算得出，不从配置读）
      */
     private long expireMillis;

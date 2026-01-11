@@ -1,7 +1,7 @@
 package com.github.zxs1994.java_template.config.jwt;
 
-import com.github.zxs1994.java_template.entity.User;
-import com.github.zxs1994.java_template.mapper.UserMapper;
+import com.github.zxs1994.java_template.entity.SysUser;
+import com.github.zxs1994.java_template.mapper.SysUserMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,11 +18,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
 
-    private final UserMapper userMapper;
+    private final SysUserMapper sysUserMapper;
 
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, ObjectMapper objectMapper, UserMapper userMapper) {
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, ObjectMapper objectMapper, SysUserMapper sysUserMapper) {
         this.jwtUtils = jwtUtils;
-        this.userMapper = userMapper;
+        this.sysUserMapper = sysUserMapper;
     }
 
     @Override
@@ -32,12 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = jwtUtils.resolveToken(request);
 
             if (token != null && jwtUtils.validateToken(token)) {
-                Long userId = jwtUtils.getUserIdFromToken(token);
+                Long sysUserId = jwtUtils.getSysUserIdFromToken(token);
                 Integer tokenVersion = jwtUtils.getTokenVersion(token);
 
-                User user = userMapper.selectById(userId);
+                SysUser sysUser = sysUserMapper.selectById(sysUserId);
 
-                if (tokenVersion.equals(user.getTokenVersion())) {  // 单点登录
+                if (tokenVersion.equals(sysUser.getTokenVersion())) {  // 单点登录
                     UsernamePasswordAuthenticationToken auth = jwtUtils.getAuthentication(token);
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);

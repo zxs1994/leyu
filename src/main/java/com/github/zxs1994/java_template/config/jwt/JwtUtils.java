@@ -1,6 +1,6 @@
 package com.github.zxs1994.java_template.config.jwt;
 
-import com.github.zxs1994.java_template.entity.User;
+import com.github.zxs1994.java_template.entity.SysUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,12 +25,12 @@ public class JwtUtils {
     /**
      * 生成 JWT token，包含用户 ID、用户名和角色列表
      */
-    public String generateToken(User user) {
+    public String generateToken(SysUser sysUser) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("id", user.getId())             // 用户 ID
-                .claim("tokenVersion", user.getTokenVersion())
+                .setSubject(sysUser.getEmail())
+                .claim("id", sysUser.getId())             // 用户 ID
+                .claim("tokenVersion", sysUser.getTokenVersion())
                 .setIssuedAt(new Date(now))      // 签发时间
                 .setExpiration(new Date(now + jwtProperties.getExpireMillis())) // 过期时间
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -47,7 +47,7 @@ public class JwtUtils {
     /**
      * 获取用户 ID
      */
-    public Long getUserIdFromToken(String token) {
+    public Long getSysUserIdFromToken(String token) {
         return parseToken(token).getBody().get("id", Long.class);
     }
 
@@ -95,8 +95,8 @@ public class JwtUtils {
      * 根据 token 获取 Authentication 对象
      */
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
-        Long userId = getUserIdFromToken(token);
-        return new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+        Long sysUserId = getSysUserIdFromToken(token);
+        return new UsernamePasswordAuthenticationToken(sysUserId, null, Collections.emptyList());
     }
 
 }

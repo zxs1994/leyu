@@ -1,6 +1,6 @@
 # 由插件生成, 禁止手动修改project.yml, 使用complie生成
 project:
-  name: 系统模板 API
+  name: JAVA后台管理系统模板
   description: SpringBoot + MyBatis-Plus 模板项目（JWT + RBAC）
   base-package: com.github.zxs1994.java_template
   version: 1.0.0

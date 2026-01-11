@@ -13,7 +13,7 @@
 
     <groupId>com.github.zxs1994</groupId>
     <artifactId>java_template</artifactId>
-    <name>系统模板 API</name>
+    <name>JAVA后台管理系统模板</name>
     <description>SpringBoot + MyBatis-Plus 模板项目（JWT + RBAC）</description>
     <version>1.0.0</version>
 

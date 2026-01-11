@@ -20,7 +20,7 @@ public class CodeGenerator {
 //        System.out.println("数据库 密码: " + password);
 //        System.out.println("项目基础包: " + basePackage);
 
-        String tableName = "user";
+        String tableName = "sys__permission";
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> builder
                         .author("xusheng")
@@ -46,7 +46,6 @@ public class CodeGenerator {
                             .logicDeleteColumnName("deleted")
                             .enableFileOverride() // 覆盖生成的文件
 
-//                        .controllerBuilder()
                 )
                 .templateEngine(new FreemarkerTemplateEngine())
                 .injectionConfig(builder -> builder

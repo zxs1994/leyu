@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * <p>
- * 枚举接口, 扫描/enums文件夹,返回所有枚举
+ * 公共接口
  * </p>
  *
  * @author xusheng
@@ -22,14 +22,14 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("/common/enums")
-@Tag(name = "公共--枚举", description = "枚举控制器")
-public class EnumController {
+@RequestMapping("/common")
+@Tag(name = "公共", description = "公共控制器")
+public class CommonController {
 
     @Autowired
     ProjectProperties projectProperties;
 
-    @GetMapping
+    @GetMapping("/enums")
     @Operation(summary = "获取所有枚举")
     public Map<String, List<Map<String, Object>>> list() {
         return EnumUtils.loadAllEnums(projectProperties.getBasePackage() + ".enums");
