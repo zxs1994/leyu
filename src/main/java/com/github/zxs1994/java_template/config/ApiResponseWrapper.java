@@ -1,7 +1,6 @@
 package com.github.zxs1994.java_template.config;
 
 import com.github.zxs1994.java_template.common.BizException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.core.MethodParameter;

@@ -4,8 +4,8 @@ import com.github.zxs1994.java_template.common.BizException;
 import com.github.zxs1994.java_template.dto.PermissionTreeNode;
 import com.github.zxs1994.java_template.entity.SysPermission;
 import com.github.zxs1994.java_template.service.ISysPermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,13 +21,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * @since 2026-01-10 01:41:52
  */
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/sys/permission")
 @Tag(name = "系统--权限", description = "系统--权限控制器")
 public class SysPermissionController {
 
-    @Autowired
-    private ISysPermissionService sysPermissionService;
+    private final ISysPermissionService sysPermissionService;
 
     @GetMapping
     @Operation(summary = "权限列表")

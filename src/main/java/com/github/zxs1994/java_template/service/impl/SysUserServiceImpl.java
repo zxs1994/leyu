@@ -7,10 +7,9 @@ import com.github.zxs1994.java_template.dto.LoginResponse;
 import com.github.zxs1994.java_template.entity.SysUser;
 import com.github.zxs1994.java_template.mapper.SysUserMapper;
 import com.github.zxs1994.java_template.service.ISysUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.zxs1994.java_template.config.jwt.JwtUtils;
+import com.github.zxs1994.java_template.config.security.jwt.JwtUtils;
 import com.github.zxs1994.java_template.service.SystemProtectService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +21,13 @@ import org.springframework.stereotype.Service;
  * @author xusheng
  * @since 2026-01-10 01:41:52
  */
+@RequiredArgsConstructor
 @Service
 public class SysUserServiceImpl extends SystemProtectService<SysUserMapper, SysUser> implements ISysUserService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private SysUserMapper sysUserMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
+    private final SysUserMapper sysUserMapper;
 
     public LoginResponse login(LoginRequest req) {
         QueryWrapper<SysUser> wrapper = new QueryWrapper<>();

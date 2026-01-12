@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zxs1994.java_template.common.BizException;
-import com.github.zxs1994.java_template.enums.DataSourceType;
+import com.github.zxs1994.java_template.enums.SourceType;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -34,7 +34,7 @@ public abstract class SystemProtectService<M extends BaseMapper<T>, T>
 
             if (value == null) return;
 
-            if (DataSourceType.SYSTEM.getCode().equals(value.toString())) {
+            if (SourceType.SYSTEM.getCode().equals(value.toString())) {
                 throw new BizException(403, "系统内置数据不允许修改或删除");
             }
         } catch (IllegalAccessException e) {

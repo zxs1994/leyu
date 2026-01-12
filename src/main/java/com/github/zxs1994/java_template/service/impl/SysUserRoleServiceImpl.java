@@ -3,7 +3,6 @@ package com.github.zxs1994.java_template.service.impl;
 import com.github.zxs1994.java_template.entity.SysUserRole;
 import com.github.zxs1994.java_template.mapper.SysUserRoleMapper;
 import com.github.zxs1994.java_template.service.ISysUserRoleService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zxs1994.java_template.service.SystemProtectService;
 import org.springframework.stereotype.Service;
 

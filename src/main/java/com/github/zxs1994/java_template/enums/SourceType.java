@@ -1,8 +1,10 @@
 package com.github.zxs1994.java_template.enums;
 
 import com.github.zxs1994.java_template.common.BaseEnum;
+import lombok.Getter;
 
-public enum DataSourceType {
+@Getter
+public enum SourceType implements BaseEnum<String> {
 
     SYSTEM("SYSTEM", "系统内置"),
     USER("USER", "用户创建");
@@ -10,17 +12,13 @@ public enum DataSourceType {
     private final String code;
     private final String desc;
 
-    DataSourceType(String code, String desc) {
+    SourceType(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public static DataSourceType fromCode(String code) {
-        for (DataSourceType type : values()) {
+    public static SourceType fromCode(String code) {
+        for (SourceType type : values()) {
             if (type.code.equals(code)) {
                 return type;
             }

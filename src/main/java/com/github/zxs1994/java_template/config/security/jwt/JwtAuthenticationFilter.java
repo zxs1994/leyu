@@ -1,4 +1,4 @@
-package com.github.zxs1994.java_template.config.jwt;
+package com.github.zxs1994.java_template.config.security.jwt;
 
 import com.github.zxs1994.java_template.entity.SysUser;
 import com.github.zxs1994.java_template.mapper.SysUserMapper;
@@ -6,24 +6,22 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+@Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
 
     private final SysUserMapper sysUserMapper;
-
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, ObjectMapper objectMapper, SysUserMapper sysUserMapper) {
-        this.jwtUtils = jwtUtils;
-        this.sysUserMapper = sysUserMapper;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

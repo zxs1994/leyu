@@ -1,7 +1,8 @@
 package com.github.zxs1994.java_template.config.security;
 
-import com.github.zxs1994.java_template.config.jwt.JwtUtils;
+import com.github.zxs1994.java_template.config.AuthLevelResolver;
 import com.github.zxs1994.java_template.entity.SysPermission;
+import com.github.zxs1994.java_template.enums.AuthLevel;
 import com.github.zxs1994.java_template.mapper.SysPermissionMapper;
 
 import com.github.zxs1994.java_template.util.CurrentUser;
@@ -9,6 +10,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,18 +19,12 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class SysPermissionFilter extends OncePerRequestFilter {
 
     private final SysPermissionMapper sysPermissionMapper;
-    private final SecurityProperties securityProperties;
+    private final AuthLevelResolver authLevelResolver;
     private final AntPathMatcher matcher = new AntPathMatcher();
-
-    public SysPermissionFilter(SysPermissionMapper sysPermissionMapper,
-                               JwtUtils jwtUtils,
-                               SecurityProperties securityProperties) {
-        this.sysPermissionMapper = sysPermissionMapper;
-        this.securityProperties = securityProperties;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,20 +34,29 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
+        AuthLevel authLevel = authLevelResolver.resolve(path);
+
         // 1️⃣ 白名单直接放行
-        if (securityProperties.getPermitUrls().stream().anyMatch(p -> matcher.match(p, path))) {
+        if (authLevel == AuthLevel.WHITELIST) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // 2️⃣ 需要登录（LOGIN_ONLY + NORMAL 都要）
         if (!CurrentUser.isLogin()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
+        // 3️⃣ 登录即可
+        if (authLevel == AuthLevel.LOGIN_ONLY) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Long userId = CurrentUser.getId();
 
-        // 3️⃣ 查询用户拥有的权限
+        // 4️⃣ NORMAL：需要权限校验
         List<SysPermission> userPermissions = sysPermissionMapper.selectByUserId(userId);
 
         // System.out.println(userPermissions.toString());

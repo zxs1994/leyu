@@ -10,15 +10,18 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
-# URL 白名单
+# 安全设置
 security:
-  permit-urls:
-    - /swagger-ui/**
-    - /swagger-ui.html
-    - /v3/api-docs/**
-    - /favicon.ico
-    - /common/**
-    - /auth/**
+    whitelist-urls:
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /v3/api-docs/**
+      - /favicon.ico
+      - /common/**
+      - /auth/**
+    login-only-urls:
+      - /sys/profile
+      - /sys/password
 
 # JWT 配置
 jwt:

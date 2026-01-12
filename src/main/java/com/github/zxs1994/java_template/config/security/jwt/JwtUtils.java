@@ -1,4 +1,4 @@
-package com.github.zxs1994.java_template.config.jwt;
+package com.github.zxs1994.java_template.config.security.jwt;
 
 import com.github.zxs1994.java_template.entity.SysUser;
 import io.jsonwebtoken.*;

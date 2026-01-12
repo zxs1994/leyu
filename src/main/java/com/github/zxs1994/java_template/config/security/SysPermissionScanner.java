@@ -2,43 +2,54 @@ package com.github.zxs1994.java_template.config.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.github.zxs1994.java_template.config.AuthLevelResolver;
 import com.github.zxs1994.java_template.entity.SysPermission;
+import com.github.zxs1994.java_template.enums.AuthLevel;
 import com.github.zxs1994.java_template.mapper.SysPermissionMapper;
 import com.github.zxs1994.java_template.util.PathUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 
+/**
+ * 系统权限扫描器（幂等入库）
+ *
+ * <p>功能：</p>
+ * <ul>
+ *   <li>启动时扫描所有 @RestController</li>
+ *   <li>解析 RequestMapping / Operation</li>
+ *   <li>自动生成权限数据</li>
+ * </ul>
+ *
+ * <p>特性：</p>
+ * <ul>
+ *   <li>仅在 dev 环境生效</li>
+ *   <li>支持重复执行（幂等）</li>
+ * </ul>
+ */
 @Component
 @Profile("dev")
+@RequiredArgsConstructor
 public class SysPermissionScanner implements ApplicationRunner {
 
     @Value("${sys-permission.scan-on-startup:false}")
     private boolean scanOnStartup;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private SysPermissionMapper sysPermissionMapper;
-
-    @Autowired
-    private SecurityProperties securityProperties;
-
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final ApplicationContext applicationContext;
+    private final SysPermissionMapper sysPermissionMapper;
+    private final AuthLevelResolver authLevelResolver;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -143,12 +154,12 @@ public class SysPermissionScanner implements ApplicationRunner {
         insertIfAbsent("全局查看", "ALL_GET", "GET", "*", "ALL", "全局", 1L);
         insertIfAbsent("全局创建", "ALL_POST", "POST", "*", "ALL", "全局", 1L);
         insertIfAbsent("全局修改", "ALL_PUT", "PUT", "*", "ALL", "全局", 1L);
-        insertIfAbsent("全局删除", "ALL_DELETE", "DELETE", "*", "ALL", "全局", 1l);
+        insertIfAbsent("全局删除", "ALL_DELETE", "DELETE", "*", "ALL", "全局", 1L);
     }
 
     /**
-     *
-     * @param str
+     * @param str 需要分割的字符串
+     * @param regex 正则分割符
      * @return /sys/role → ["sys", "role"]
      */
     private String[] resolveModuleHierarchy(String str, String regex) {
@@ -180,7 +191,7 @@ public class SysPermissionScanner implements ApplicationRunner {
                         .eq("path", path)
         );
 
-        int authLevel = getAuthLevel(path);
+        AuthLevel level = authLevelResolver.resolve(path);
 
         if (p == null) {
             p = new SysPermission();
@@ -191,7 +202,7 @@ public class SysPermissionScanner implements ApplicationRunner {
         p.setName(name);
         p.setModule(module);
         p.setModuleName(moduleName);
-        p.setAuthLevel(authLevel);
+        p.setAuthLevel(level.getCode());
         p.setParentId(parentId);
         p.setDel(false);
 
@@ -202,19 +213,6 @@ public class SysPermissionScanner implements ApplicationRunner {
         }
 
         return p.getId();
-    }
-
-    private int getAuthLevel(String path) {
-        int authLevel = 0; // 默认权限校验
-
-        // authLevel 后期增加什么类型应该也从配置文件中读取
-        for (String permit : securityProperties.getPermitUrls()) {
-            if (pathMatcher.match(permit, path)) {
-                authLevel = 1; // 白名单
-                break;
-            }
-        }
-        return authLevel;
     }
 
     private MappingInfo resolveMapping(Method method) {
@@ -239,15 +237,12 @@ public class SysPermissionScanner implements ApplicationRunner {
         return null;
     }
 
-    static class MappingInfo {
-        final String method;
-        final String[] paths;
-
-        MappingInfo(String method, String[] paths) {
-            this.method = method;
-            this.paths = (paths == null || paths.length == 0)
-                    ? new String[]{""}
-                    : paths;
+    record MappingInfo(String method, String[] paths) {
+            MappingInfo(String method, String[] paths) {
+                this.method = method;
+                this.paths = (paths == null || paths.length == 0)
+                        ? new String[]{""}
+                        : paths;
+            }
         }
-    }
 }

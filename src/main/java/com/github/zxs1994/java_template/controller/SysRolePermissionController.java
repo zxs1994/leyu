@@ -3,8 +3,8 @@ package com.github.zxs1994.java_template.controller;
 import com.github.zxs1994.java_template.common.BizException;
 import com.github.zxs1994.java_template.entity.SysRolePermission;
 import com.github.zxs1994.java_template.service.ISysRolePermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,13 +20,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * @since 2026-01-10 01:41:52
  */
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/sys/role-permission")
 @Tag(name = "系统--角色-权限关联", description = "系统--角色-权限关联控制器")
 public class SysRolePermissionController {
 
-    @Autowired
-    private ISysRolePermissionService sysRolePermissionService;
+    private final ISysRolePermissionService sysRolePermissionService;
 
     @GetMapping
     @Operation(summary = "角色-权限关联列表")

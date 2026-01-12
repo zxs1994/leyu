@@ -2,10 +2,10 @@ package com.github.zxs1994.java_template.controller;
 
 import com.github.zxs1994.java_template.common.BizException;
 import com.github.zxs1994.java_template.entity.SysUser;
-import com.github.zxs1994.java_template.enums.DataSourceType;
+import com.github.zxs1994.java_template.enums.SourceType;
 import com.github.zxs1994.java_template.service.ISysUserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,13 +21,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * @since 2026-01-10 01:41:52
  */
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/sys/user")
 @Tag(name = "系统--用户", description = "系统--用户控制器")
 public class SysUserController {
 
-    @Autowired
-    private ISysUserService sysUserService;
+    private final ISysUserService sysUserService;
 
     @GetMapping
     @Operation(summary = "用户列表")
@@ -49,7 +49,7 @@ public class SysUserController {
     @Operation(summary = "新增用户")
     public SysUser save(@RequestBody SysUser sysUser) {
         sysUser.setTokenVersion(0);
-        sysUser.setSource(DataSourceType.USER.getCode());
+        sysUser.setSource(SourceType.USER.getCode());
         boolean success = sysUserService.save(sysUser);
         if (!success) {
             throw new BizException(400, "新增用户失败");

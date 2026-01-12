@@ -48,78 +48,107 @@
 
 ## 目录结构（关键文件）
 
-主包路径：`src/main/java/com/github/zxs1994/java_template/`
-   - `controller/`：用户、角色、权限等 REST 控制器（如 `UserController`、`RoleController` 等）
-   - `entity/`：实体类（如 `User`、`Role`、`Permission` 等）
-   - `service/`：业务接口与实现（如 `IUserService`、`UserServiceImpl`）
-   - `mapper/`：MyBatis-Plus Mapper 接口
-   - `config/`：配置类（如 `SecurityConfig`、`JwtAuthenticationFilter`、`MyBatisPlusConfig`）
-   - `common/`：通用响应、异常、基础类（如 `ApiResponse`、`BaseEntity`、`BizException`）
-   - `util/`：工具类（如 `EnumUtils`、`TimeProvider`、`JwtUtils`、`LoadYaml`）
-   - `dto/`：数据传输对象（如 `LoginRequest`、`LoginResponse`）
-   - `enums/`：枚举类型
-   - `devtools/`：代码生成器入口（`src/main/java/devtools/CodeGenerator.java`）
-资源文件：
-   - `src/main/resources/application.yml`、`application-dev.yml`、`application-prod.yml`、`project.yml`：配置文件（全部为 yml 格式）
-   - `src/main/resources/templates/`：代码生成 Freemarker 模板（entity、controller）
-数据库建表 SQL：
-   - `init.sql`：包含 user、role、permission、user_role、role_permission 五张表结构
+
+### 主要目录结构
+
+```
+src/
+   main/
+      java/
+         com/github/zxs1994/java_template/
+            Application.java                 # 启动类
+            common/                          # 通用响应、异常、基础类（ApiResponse、BaseEntity等）
+            config/                          # 配置类（含Security、JWT、MyBatisPlus、Swagger等）
+               myBatisPlus/
+               security/
+                  jwt/
+               swagger/
+            controller/                      # 用户、角色、权限等REST控制器
+            dto/                             # 数据传输对象（LoginRequest、LoginResponse等）
+            entity/                          # 实体类（SysUser、SysRole、SysPermission等）
+            enums/                           # 枚举类型
+            mapper/                          # MyBatis-Plus Mapper接口及xml
+               xml/
+            service/                         # 业务接口与实现
+               impl/
+            util/                            # 工具类（EnumUtils、TimeProvider等）
+      devtools/
+         CodeGenerator.java                 # 代码生成器入口
+         LoadYaml.java                      # Yaml加载工具
+   resources/
+      application.yml                      # 主配置
+      application-dev.yml                  # 开发环境配置
+      application-prod.yml                 # 生产环境配置
+      project.yml                          # 由插件生成的项目信息
+      templates/                           # Freemarker代码生成模板
+         controller.java.ftl
+         entity.java.ftl
+init.sql                                 # 数据库建表及初始化SQL
+deploy.sh                                # 部署脚本
+pom.xml                                  # Maven项目描述文件
+readme.md                                # 项目说明文档
+```
 
 ---
 
 ## 快速开始 🚀
 
+
 ### 前置条件
-- JDK 17  
-- Maven  
-- MySQL（或修改 `application-dev.yml` 为你的数据源）
+- JDK 17
+- Maven 3.8+
+- MySQL 8+（或根据 `application-dev.yml` 修改为你的数据源）
+
 
 ### 克隆 & 构建
 ```bash
 git clone <repo-url>
 cd java_template
-mvn clean package
+mvn clean package -DskipTests
 ```
 
+
 ### 运行
-- 开发（使用 dev 配置）
+
+- 开发环境（默认dev配置）
 ```bash
 mvn spring-boot:run
+# 或
 java -jar target/java_template-1.0.0.jar
 ```
 
-- 生产运行示例（带 JVM 时区参数，见 `deploy.sh`）：
+- 生产环境运行（见 `deploy.sh` 可参考）
 ```bash
-# 最简单启动（示例）
 java -jar target/java_template-1.0.0.jar --spring.profiles.active=prod
-
-# 带示例 JVM 内存配置（可选）
+# JVM内存参数示例
 java -Xms512m -Xmx1g -jar target/java_template-1.0.0.jar --spring.profiles.active=prod
 ```
 
 
+
 ### 配置
 - 默认激活 profile：`application.yml` 中 `spring.profiles.active=dev`
-- 开发环境数据库配置：`src/main/resources/application-dev.yml`（示例已指向 `jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false`）
+- 开发环境数据库配置：`src/main/resources/application-dev.yml`（默认指向 `jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false`）
+- 生产环境配置：`src/main/resources/application-prod.yml`
 
 ---
 
 ## 数据库 & 样例数据 🗄️
 
-数据库建表与样例数据在 `init.sql`，包含 user、role、permission、user_role、role_permission 五张表结构。导入后即可直接测试 API。
+数据库建表与样例数据在 `init.sql`，包含 sys__user、sys__role、sys__permission、sys__user_role、sys__role_permission 五张表结构。导入后即可直接测试 API。
 
 ---
 
 ## API 示例（重要端点） 🔎
 
 - 用户相关：
-   - 列表：GET /user
-   - 获取：GET /user/{id}
-   - 新增：POST /user  （JSON body）
-   - 更新：PUT /user/{id}   （JSON body）
-   - 删除：DELETE /user/{id}
-   - 分页：GET /user/page?page=1&size=10
-- 枚举统一接口：GET /enums/all
+   - 列表：GET /sys/user
+   - 获取：GET /sys/user/{id}
+   - 新增：POST /sys/user  （JSON body）
+   - 更新：PUT /sys/user/{id}   （JSON body）
+   - 删除：DELETE /sys/user/{id}
+   - 分页：GET /sys/user/page?page=1&size=10
+- 枚举统一接口：GET /common/enums
 - 角色、权限、用户-角色、角色-权限等接口均有对应 CRUD
 
 ---
@@ -130,16 +159,17 @@ java -Xms512m -Xmx1g -jar target/java_template-1.0.0.jar --spring.profiles.activ
 **概述**：
    - 新增基于角色-权限的权限管理，主要数据库表为 `sys__permission`（权限）和 `sys__role_permission`（角色-权限关联）。
    - **权限表无需手动维护，所有变更均由扫描器自动完成，手动更改会被覆盖或逻辑删除。**
-   - 支持通过启动时扫描 Controller 自动同步权限到数据库（可选）。
+   - 支持通过启动时扫描 Controller 自动同步权限到数据库（可选，详见 `SysPermissionScanner` 及 `security.whitelist-urls` 配置）。
 
 **自动扫描与初始化**：
    - `SysPermissionScanner`（仅在 `dev` profile 生效，类上有 `@Profile("dev")`）可在启动时扫描 `@RestController` 的接口并同步到 `sys__permission`。默认不开启，配置项：
       - `sys-permission.scan-on-startup: false`（位于 `application-dev.yml`）
+   - 白名单路径通过 `security.whitelist-urls` 配置（见 `SecurityProperties`），支持 Ant 风格。
    - 项目会初始化一组**全局权限**：`ALL`, `ALL_GET`, `ALL_POST`, `ALL_PUT`, `ALL_DELETE`，用于快速控制全局访问。
    - **路由自动生成：** 数据库表名如 `sys__user` 会自动生成 `/sys/user` 路由，`__` 是分隔约定，表注释如 `COMMENT='系统--用户表'` 也会自动用于接口分组和文档。
 
 **白名单 & 授权判断**：
-   - 白名单通过 `security.permit-urls` 配置（`SecurityProperties`）配置路径模式（支持 Ant 风格），示例在 `application-dev.yml` 中可配置。
+   - 白名单通过 `security.whitelist-urls` 配置（`SecurityProperties`）配置路径模式（支持 Ant 风格），示例在 `application-dev.yml` 中可配置。
    - 权限校验流程（`SysPermissionFilter`）：
       1. 首先匹配白名单（若匹配则放行，白名单接口不加锁，文档和分组也会完整展示）。
       2. 检查登录状态（未登录返回 401）。
@@ -156,7 +186,7 @@ java -Xms512m -Xmx1g -jar target/java_template-1.0.0.jar --spring.profiles.activ
 **使用建议**：
    - 开发时可临时打开 `sys-permission.scan-on-startup: true` 来初始化或同步权限，**慎用**（可能覆盖已有权限数据）。
    - 扫描会排除 Swagger/OpenAPI 相关 Controller（类名包含 `swagger` 或 `openapi`）。
-   - `security.permit-urls` 支持 Ant 风格路径（例如 `/public/**`）。
+   - `security.whitelist-urls` 支持 Ant 风格路径（例如 `/public/**`）。
 
 ---
 
@@ -165,7 +195,7 @@ java -Xms512m -Xmx1g -jar target/java_template-1.0.0.jar --spring.profiles.activ
 
 示例 curl（列出所有用户）：
 ```bash
-curl -X GET http://localhost:8088/user
+curl -X GET http://localhost:8088/sys/user
 ```
 
 > 注意：所有正常响应默认会被 `ApiResponse` 包装；若要跳过包装，在 Controller 或方法上使用 `@NoApiWrap`。
@@ -174,22 +204,26 @@ curl -X GET http://localhost:8088/user
 
 ## 代码生成器（快速生成实体/Mapper/Controller） 🛠️
 
+
 代码生成器：
 - 入口：`src/main/java/devtools/CodeGenerator.java`，直接运行 main 方法即可
-- 配置读取：`src/main/resources/application-dev.yml`（数据库连接）、`project.yml`（基础包名）
+- 配置读取：`src/main/resources/application-dev.yml`（数据库连接）、`project.yml`（基础包名，自动生成）
 - 模板：`src/main/resources/templates/`（可自定义 entity/controller）
+- 支持自定义表名、包名、模板内容，生成 entity、controller、mapper、xml 等代码
 
 ---
 
 
 ## 文档（Swagger / OpenAPI） 📚
 
-- 启动后访问：`/swagger-ui.html` 或 `/swagger-ui/index.html`（springdoc 默认路径）  
+
+- 启动后访问：`/swagger-ui.html` 或 `/swagger-ui/index.html`（springdoc 默认路径）
 - 原始 JSON：`/v3/api-docs`
+
 
 ### Swagger 极致体验亮点
 
-- **分组、接口、响应结构全部自动生成，ApiResponse 结构和分组文档自动展示**。
+- **分组、接口、响应结构全部自动生成，ApiResponse 结构和分组文档自动展示。**
 - **白名单接口（如登录、注册、公开接口）无需登录即可访问，且文档中会完整显示，不会被权限拦截隐藏。**
 - **所有接口分组、路径、注释均自动从数据库表名、表注释、Controller 注解生成，无需手写维护。**
 
@@ -233,13 +267,16 @@ curl -X GET http://localhost:8088/user
 
 ## 测试 & 扩展 💡
 
-- 可添加集成测试或单元测试（当前仓库暂无测试样例）
+
+- 可添加集成测试或单元测试（当前仓库暂无测试样例，推荐使用 JUnit 5 + Spring Boot Test）
 
 ---
 
 ## 贡献 & 联系 ❤️
 
+
 欢迎提交 Issues / PR，或基于该模板进行定制化改造。
+如有建议或问题可通过 GitHub issue 联系。
 
 ---
 

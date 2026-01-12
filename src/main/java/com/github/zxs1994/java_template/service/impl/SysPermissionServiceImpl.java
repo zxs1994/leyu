@@ -6,7 +6,7 @@ import com.github.zxs1994.java_template.entity.SysPermission;
 import com.github.zxs1994.java_template.mapper.SysPermissionMapper;
 import com.github.zxs1994.java_template.service.ISysPermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,10 +22,11 @@ import java.util.Map;
  * @author xusheng
  * @since 2026-01-10 01:41:52
  */
+@RequiredArgsConstructor
 @Service
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission> implements ISysPermissionService {
-    @Autowired
-    SysPermissionMapper sysPermissionMapper;
+
+    private final SysPermissionMapper sysPermissionMapper;
 
     @Override
     public List<PermissionTreeNode> getPermissionTree() {

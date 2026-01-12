@@ -1,34 +1,28 @@
 package com.github.zxs1994.java_template.config.swagger;
 
 import com.github.zxs1994.java_template.config.ProjectProperties;
-import com.github.zxs1994.java_template.config.security.SecurityProperties;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class OpenApiConfig {
 
-    @Autowired
-    private SwaggerCustomizerProvider provider;
+    private final SwaggerCustomizerProvider provider;
 
-    @Autowired
-    private SecurityProperties securityProperties;
-
-    @Autowired
-    private ProjectProperties projectProperties;
+    private final ProjectProperties projectProperties;
 
     /**
      * OpenAPI 全局配置 JWT 安全

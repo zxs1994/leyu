@@ -1,12 +1,12 @@
 package com.github.zxs1994.java_template.config.security;
 
 import com.github.zxs1994.java_template.common.ApiResponse;
-import com.github.zxs1994.java_template.config.jwt.JwtAuthenticationFilter;
-import com.github.zxs1994.java_template.config.jwt.JwtUtils;
+import com.github.zxs1994.java_template.config.security.jwt.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.github.zxs1994.java_template.mapper.SysUserMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableAutoConfiguration(exclude = {UserDetailsServiceAutoConfiguration.class})
 public class SecurityConfig {
 
@@ -32,27 +33,11 @@ public class SecurityConfig {
     private final SecurityProperties securityProperties;
 
     private final SysPermissionFilter sysPermissionFilter;
-
-    private final SysUserMapper sysUserMapper;
-
-    public SecurityConfig(SecurityProperties securityProperties, SysPermissionFilter sysPermissionFilter, SysUserMapper sysUserMapper) {
-        this.securityProperties = securityProperties;
-        this.sysPermissionFilter = sysPermissionFilter;
-        this.sysUserMapper = sysUserMapper;
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-            JwtUtils jwtUtils,
             ObjectMapper objectMapper) throws Exception {
-
-        // 白名单
-        String[] urls = securityProperties.getPermitUrls().toArray(new String[0]);
-
-
-        // 创建 JWT 过滤器实例
-        JwtAuthenticationFilter jwtFilter =
-                new JwtAuthenticationFilter(jwtUtils, objectMapper, sysUserMapper);
 
         http
                 // 禁用 CSRF，因为我们用 JWT
@@ -63,14 +48,18 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable())
 
                 // 权限配置
-                .authorizeHttpRequests(auth ->
-                                auth.requestMatchers(urls).permitAll()
-                    .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        // 白名单（Spring Security 级别）
+                        .requestMatchers(securityProperties.getWhitelistUrls().toArray(String[]::new))
+                        .permitAll()
+
+                        // 其他一律要求登录（兜底）
+                        .anyRequest().authenticated()
                 )
 
-                // JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-
+                // 🔐 谁是谁 → before JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // 🔑 能不能 → after 权限过滤
                 .addFilterAfter(sysPermissionFilter, JwtAuthenticationFilter.class)
 
                 // 返回 JSON 而不是默认 HTML 登录页

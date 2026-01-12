@@ -5,12 +5,12 @@ import ${basePackage}.common.BizException;
 import ${basePackage}.entity.${entity};
 import ${basePackage}.service.I${entity}Service;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 <#-- 如果 entityLower 没传，就用 entity 名称首字母小写 -->
 <#assign entityLower = entity?uncap_first>
@@ -36,13 +36,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * @since ${date}
  */
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/${table.name?replace('__', '/')?replace('_', '-')}")
 @Tag(name = "${entityComment}", description = "${entityComment}控制器")
 public class ${entity}Controller {
 
-    @Autowired
-    private I${entity}Service ${entityLower}Service;
+    private final I${entity}Service ${entityLower}Service;
 
     @GetMapping
     @Operation(summary = "${entityShortComment}列表")
