@@ -335,8 +335,10 @@ OffsetDateTime 2026-01-13T03:02:30Z
 ```ini
 [mysqld]
 default-time-zone = '+08:00'
-```
 
+连接数据库时
+serverTimezone=Asia/Shanghai
+```
 效果说明：
 
 - `TIMESTAMP` 字段将以北京时间写入与读取
