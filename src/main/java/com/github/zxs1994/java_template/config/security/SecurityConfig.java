@@ -28,17 +28,10 @@ import java.util.List;
 @EnableAutoConfiguration(exclude = {UserDetailsServiceAutoConfiguration.class})
 public class SecurityConfig {
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern("*");  // 或指定域名
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.addAllowedHeader("*");          // 或只写你需要的头
-        // allowCredentials 默认 false
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+    private final SecurityProperties securityProperties;
+
+    private final SysPermissionFilter sysPermissionFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // 注册密码加密 Bean
     @Bean
@@ -46,20 +39,28 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    private final SecurityProperties securityProperties;
-
-    private final SysPermissionFilter sysPermissionFilter;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    // 跨域配置
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOriginPattern("*"); // 或指定域名
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.addAllowedHeader("*"); // 或只写你需要的头
+        // allowCredentials 默认 false
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
             ObjectMapper objectMapper) throws Exception {
 
         http
+            // 让 Spring Security 应用 corsConfigurationSource 配置
             .cors(Customizer.withDefaults())
             // 禁用 CSRF，因为我们用 JWT
             .csrf(csrf -> csrf.disable())
-
             // 不使用表单登录或 HTTP Basic
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
