@@ -112,6 +112,7 @@ src/
       java/
          com/github/zxs1994/java_template/
             Application.java                 # 启动类
+            cache/                           # 缓存
             common/                          # 通用响应、异常、基础类（ApiResponse、BaseEntity等）
             config/                          # 配置类（含Security、JWT、MyBatisPlus、Swagger等）
                myBatisPlus/
@@ -119,14 +120,15 @@ src/
                   jwt/
                swagger/
             controller/                      # 用户、角色、权限等REST控制器
-            dto/                             # 数据传输对象（LoginRequest、LoginResponse等）
+            dto/                             # 数据传输对象（LoginDTO等）
             entity/                          # 实体类（SysUser、SysRole、SysPermission等）
             enums/                           # 枚举类型
             mapper/                          # MyBatis-Plus Mapper接口及xml
                xml/
             service/                         # 业务接口与实现
                impl/
-            util/                            # 工具类（EnumUtils、TimeProvider等）
+            util/                            # 工具类（EnumUtils、CurrentUser等）
+            vo/                              # 返回给前端的数据（LoginVO等）
       devtools/
          CodeGenerator.java                 # 代码生成器入口
          LoadYaml.java                      # Yaml加载工具
@@ -138,6 +140,7 @@ src/
       templates/                           # Freemarker代码生成模板
          controller.java.ftl
          entity.java.ftl
+img/                                     # readme.md依赖的图片
 init.sql                                 # 数据库建表及初始化SQL
 deploy.sh                                # 部署脚本
 pom.xml                                  # Maven项目描述文件
