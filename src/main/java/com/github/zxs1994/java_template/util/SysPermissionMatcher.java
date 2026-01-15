@@ -3,6 +3,7 @@ package com.github.zxs1994.java_template.util;
 import com.github.zxs1994.java_template.entity.SysPermission;
 import org.springframework.util.AntPathMatcher;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,23 +12,57 @@ public class SysPermissionMatcher {
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     /**
-     * 匹配权限规则：
-     * 1️⃣ 尝试精确匹配请求的 method + path
-     * 2️⃣ 如果没有匹配到，再尝试全局通配规则（如 /**）
+     * 从精确到全局匹配
      */
-    public static SysPermission matchExactThenGlobal(List<SysPermission> allPermissions, String method, String path) {
+    public static SysPermission matchExactThenGlobal(
+            List<SysPermission> allPermissions,
+            String method,
+            String path
+    ) {
 
-        // 1️⃣ 尝试精确匹配（不包含通配符）
-        SysPermission exact = allPermissions.stream()
-                .filter(p -> !p.getPath().contains("*") && antPathMatcher.match(p.getPath(), path))
-                .findFirst().orElse(null);
+        // 1️⃣ 先过滤 method（支持 *）
+        List<SysPermission> methodMatched = allPermissions.stream()
+                .filter(p ->
+                        "*".equals(p.getMethod())
+                                || p.getMethod().equalsIgnoreCase(method)
+                )
+                .toList();
 
-        if (exact != null) return exact;
+        // 2️⃣ 精确路径优先（如 /sys/role/{id}）
+        SysPermission exact = methodMatched.stream()
+                .filter(p -> !p.getPath().endsWith("/**"))
+                .filter(p -> antPathMatcher.match(p.getPath(), path))
+                .findFirst()
+                .orElse(null);
 
-        // 通配符匹配
-        return allPermissions.stream()
-                .filter(p -> p.getMethod().equalsIgnoreCase(method) && antPathMatcher.match(p.getPath(), path))
-                .findFirst().orElse(null);
+        if (exact != null) {
+            return exact;
+        }
+
+        // 3️⃣ 通配路径（/**、/sys/**），按“路径具体度”排序
+        return methodMatched.stream()
+                .filter(p -> antPathMatcher.match(p.getPath(), path))
+                .sorted(Comparator.comparingInt(SysPermissionMatcher::pathSpecificity).reversed())
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * 路径具体度：
+     * 2 - 精确接口（/sys/role/{id}）
+     * 1 - 模块级（/sys/role/**）
+     * 0 - 全局（/**）
+     */
+    private static int pathSpecificity(SysPermission p) {
+        String path = p.getPath();
+
+        if ("/**".equals(path)) {
+            return 0;
+        }
+        if (path.endsWith("/**")) {
+            return 1;
+        }
+        return 2;
     }
 
     /**

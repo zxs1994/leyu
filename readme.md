@@ -33,7 +33,7 @@
 > - 权限与接口强一致
 > - 不会出现“表里有权限，接口不存在”的情况
 
-![权限表设计](img/sys__permission.jpg "sys_permission 表结构")
+![权限表设计](img/权限表.jpg "sys_permission 表结构")
 
 ---
 
@@ -45,7 +45,7 @@
     - 通配规则：`/**`
 - 使用 `AntPathMatcher` 统一处理
 
-![权限判断流程](img/SysPermissionFilter.jpg "权限判断")
+![权限判断流程](img/权限过滤器.jpg "权限判断")
 
 ---
 
