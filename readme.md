@@ -424,3 +424,10 @@ serverTimezone=Asia/Shanghai
 如有建议或问题可通过 GitHub issue 联系。
 
 ---
+
+## 许可证 📄
+
+本项目基于 **MIT License** 开源协议发布。  
+详情请参阅 [LICENSE](LICENSE) 文件。
+
+---
