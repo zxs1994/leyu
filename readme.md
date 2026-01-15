@@ -104,48 +104,63 @@
 ## 目录结构（关键文件）
 
 
-### 主要目录结构
+## 项目结构 🗂️
 
-```
-src/
-   main/
-      java/
-         com/github/zxs1994/java_template/
-            Application.java                 # 启动类
-            cache/                           # 缓存
-            common/                          # 通用响应、异常、基础类（ApiResponse、BaseEntity等）
-            config/                          # 配置类（含Security、JWT、MyBatisPlus、Swagger等）
-               myBatisPlus/
-               security/
-                  jwt/
-               swagger/
-            controller/                      # 用户、角色、权限等REST控制器
-            dto/                             # 数据传输对象（LoginDTO等）
-            entity/                          # 实体类（SysUser、SysRole、SysPermission等）
-            enums/                           # 枚举类型
-            mapper/                          # MyBatis-Plus Mapper接口及xml
-               xml/
-            service/                         # 业务接口与实现
-               impl/
-            util/                            # 工具类（EnumUtils、CurrentUser等）
-            vo/                              # 返回给前端的数据（LoginVO等）
-      devtools/
-         CodeGenerator.java                 # 代码生成器入口
-         LoadYaml.java                      # Yaml加载工具
-   resources/
-      application.yml                      # 主配置
-      application-dev.yml                  # 开发环境配置
-      application-prod.yml                 # 生产环境配置
-      project.yml                          # 由插件生成的项目信息
-      templates/                           # Freemarker代码生成模板
-         controller.java.ftl
-         entity.java.ftl
-img/                                     # readme.md依赖的图片
-init.sql                                 # 数据库建表及初始化SQL
-deploy.sh                                # 部署脚本
-pom.xml                                  # Maven项目描述文件
-readme.md                                # 项目说明文档
-```
+```text
+.
+├─ src
+│  ├─ main
+│  │  ├─ java
+│  │  │  └─ com/github/zxs1994/java_template
+│  │  │     ├─ Application.java              # 🚀 应用启动入口
+│  │  │
+│  │  │     ├─ cache/                         # 🔥 权限 / 系统级缓存（SysPermissionCache 等）
+│  │  │
+│  │  │     ├─ common/                        # 🌐 通用基础模块
+│  │  │
+│  │  │     ├─ config/                        # ⚙️ 系统配置
+│  │  │     │  ├─ mybatisplus/                # MyBatis-Plus 配置
+│  │  │     │  ├─ security/                   # Spring Security 配置
+│  │  │     │  │  └─ jwt/                     # JWT 认证与过滤器
+│  │  │     │  └─ swagger/                    # Swagger / OpenAPI
+│  │  │
+│  │  │     ├─ controller/                    # 🎯 REST API 控制器
+│  │  │
+│  │  │     ├─ dto/                           # 📦 请求参数 DTO（LoginDTO 等）
+│  │  │
+│  │  │     ├─ entity/                        # 🧩 数据库实体（SysUser / SysRole / SysPermission）
+│  │  │
+│  │  │     ├─ enums/                         # 📘 枚举定义（状态 / 类型 / 权限级别）
+│  │  │
+│  │  │     ├─ mapper/                        # 🗄️ MyBatis-Plus Mapper
+│  │  │     │  └─ xml/                        # XML 映射文件
+│  │  │
+│  │  │     ├─ service/                       # 🧠 业务层接口
+│  │  │     │  └─ impl/                       # 业务实现
+│  │  │
+│  │  │     ├─ util/                          # 🛠️ 工具类（CurrentUser / EnumUtils 等）
+│  │  │
+│  │  │     └─ vo/                            # 🎁 返回给前端的数据结构（LoginVO 等）
+│  │
+│  │  └─ resources
+│  │     ├─ application.yml                  # 主配置文件
+│  │     ├─ application-dev.yml              # 开发环境
+│  │     ├─ application-prod.yml             # 生产环境
+│  │     ├─ project.yml                      # 插件生成的项目元数据
+│  │     └─ templates/                       # 🧬 Freemarker 代码生成模板
+│  │        ├─ controller.java.ftl
+│  │        └─ entity.java.ftl
+│  │
+│  └─ devtools
+│     ├─ CodeGenerator.java                  # 🧪 代码生成器入口
+│     └─ LoadYaml.java                       # Yaml 加载工具
+│
+├─ img/                                     # 🖼️ README 使用的图片资源
+├─ init.sql                                 # 🗄️ 数据库初始化脚本
+├─ deploy.sh                                # 🚢 部署脚本
+├─ LICENSE                                  # 📄 MIT License
+├─ pom.xml                                  # 📦 Maven 配置
+└─ README.md                                # 📘 项目说明
 
 ---
 
