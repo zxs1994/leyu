@@ -53,7 +53,7 @@ public class MyTenantHandler implements TenantLineHandler {
             return true;
         }
 
-        // 如果当前用户是超级管理员（全局共享用户），也忽略
+        // 如果当前用户是平台用户，也忽略
         if (CurrentUser.isPlatformUser()) {
             return true; // 不加 tenant_id
         }

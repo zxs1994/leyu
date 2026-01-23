@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class CodeGenerator {
 
@@ -28,26 +27,6 @@ public class CodeGenerator {
 //        System.out.println("项目基础包: " + basePackage);
 
         String tableName = "sys__user_role";
-
-        // 不生成控制器的表
-        Set<String> noControllerTables = Set.of(
-                "sys__user_role",
-                "sys__role_permission"
-        );
-
-        // 只读字段（模板里统一处理）
-        Set<String> readOnlyFields = Set.of(
-                "id",
-                "source",
-                "token_version"
-        );
-
-        // 使用自增ID的表（模板里统一处理）
-        Set<String> autoIdTables = Set.of(
-                "sys__permission",
-                "sys__user_role",
-                "sys__role_permission"
-        );
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> builder
@@ -80,21 +59,20 @@ public class CodeGenerator {
                     Map<String, Object> customMap = new HashMap<>();
 
                     customMap.put("basePackage", basePackage);
-                    customMap.put("readOnlyFields", readOnlyFields);
-                    customMap.put("autoIdTables", autoIdTables);
+                    customMap.put("readOnlyFields", GeneratorConfig.readOnlyFields);
+                    customMap.put("autoIdTables", GeneratorConfig.autoIdTables);
 
                     builder.customMap(customMap);
                 })
                 .execute();
 
-        deleteNoControllerFiles(outputDir, basePackage, noControllerTables);
+        deleteNoControllerFiles(outputDir, basePackage);
 
     }
 
     private static void deleteNoControllerFiles(
             String outputDir,
-            String basePackage,
-            Set<String> noControllerTables
+            String basePackage
     ) throws IOException {
 
         String controllerPath = outputDir
@@ -102,7 +80,7 @@ public class CodeGenerator {
                 + basePackage.replace(".", "/")
                 + "/controller";
 
-        for (String table : noControllerTables) {
+        for (String table : GeneratorConfig.noControllerTables) {
             String entityName =
                     NamingStrategy.capitalFirst(
                             NamingStrategy.underlineToCamel(table)

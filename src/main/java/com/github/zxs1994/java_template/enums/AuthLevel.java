@@ -2,8 +2,10 @@ package com.github.zxs1994.java_template.enums;
 
 import com.github.zxs1994.java_template.common.BaseEnum;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum AuthLevel implements BaseEnum<Integer> {
 
     NORMAL(0, "权限校验", "blue"),
@@ -14,12 +16,6 @@ public enum AuthLevel implements BaseEnum<Integer> {
     private final Integer code;
     private final String desc;
     private final String color;
-
-    AuthLevel(Integer code, String desc, String color) {
-        this.code = code;
-        this.desc = desc;
-        this.color = color;
-    }
 
     public static AuthLevel fromCode(Integer code) {
         for (AuthLevel level : values()) {
