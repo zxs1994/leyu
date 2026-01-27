@@ -17,7 +17,7 @@
 
 ## 预览说明
 
-**提示**：由于使用的是海外免费的部署服务，访问速度可能会较慢。
+**提示**：由于q前端使用的是海外免费的部署服务，首屏加载会较慢。
 
 ### UI 界面
 访问主站：  
@@ -25,7 +25,7 @@
 
 ### API 文档 (Swagger)
 访问 Swagger UI：  
-[api.leyu.xusheng94.com/swagger-ui/index.html](https://api.leyu.xusheng94.com/swagger-ui/index.html)
+[http://8.159.136.15/swagger-ui/index.html](https://api.leyu.xusheng94.com/swagger-ui/index.html)
 
 ---
 

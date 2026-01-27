@@ -27,10 +27,14 @@ else
   echo "ℹ️  No running process found."
 fi
 
-echo "🚀 Starting new process..."
-# 设置 JVM 时区为东八区，确保应用内时间与数据库一致
-sudo nohup java -jar "$APP_NAME" \
-  --spring.profiles.active=prod
+# 默认环境是 prod，如果脚本参数传了就用参数
+ENV=${1:-prod}
 
-echo "✅ Started $APP_NAME"
+echo "🚀 Starting new process in environment: $ENV"
+
+sudo nohup java -jar "$APP_NAME" \
+  --spring.profiles.active="$ENV" \
+  > /dev/null 2>&1 &
+
+echo "✅ Started $APP_NAME with profile $ENV"
 echo "Done."

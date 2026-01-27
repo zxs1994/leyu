@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 80
 
 spring:
   datasource:
@@ -11,13 +11,6 @@ spring:
 logging:
   file:
     name: logs/app.log
-
-# Swagger 配置
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
 
 # 权限扫描开关
 # true  ：启动时扫描 Controller 并同步权限到数据库（可能覆盖/恢复权限数据）
