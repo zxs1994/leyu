@@ -25,7 +25,7 @@
 
 ### API 文档 (Swagger)
 访问 Swagger UI：  
-[http://8.159.136.15/swagger-ui/index.html](http://8.159.136.15/swagger-ui/index.html)
+[http://8.159.136.15/api/swagger-ui/index.html](http://8.159.136.15/api/swagger-ui/index.html)
 
 ---
 
