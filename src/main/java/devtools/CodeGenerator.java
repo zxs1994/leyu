@@ -50,7 +50,6 @@ public class CodeGenerator {
 
                         .entityBuilder()
                             .enableTableFieldAnnotation() // ✅ 强烈推荐
-                            .addIgnoreColumns("created_at", "updated_at")
                             .logicDeleteColumnName("deleted")
                             .enableFileOverride() // 覆盖生成的文件
 
@@ -60,8 +59,9 @@ public class CodeGenerator {
                     Map<String, Object> customMap = new HashMap<>();
 
                     customMap.put("basePackage", basePackage);
-                    customMap.put("readOnlyFields", GeneratorConfig.readOnlyFields);
                     customMap.put("autoIdTables", GeneratorConfig.autoIdTables);
+                    customMap.put("readOnlyFields", GeneratorConfig.readOnlyFields);
+                    customMap.put("ignoreFields", GeneratorConfig.ignoreFields);
                     customMap.put("queryConfig", GeneratorConfig.queryConfig);
 
                     injectConfig.customMap(customMap);
@@ -82,6 +82,7 @@ public class CodeGenerator {
                             .fileName("Query.java")
                             .templatePath("templates/query.java.ftl")
                             .packageName("query")
+                            .enableFileOverride() // 覆盖生成的文件
                             .build());
                 })
                 .execute();

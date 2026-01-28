@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xusheng94.leyu.common.BaseEntity;
 import com.xusheng94.leyu.common.BaseQuery;
 import com.xusheng94.leyu.common.BizException;
 import com.xusheng94.leyu.dto.SysRoleDto;
@@ -107,7 +106,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         // 2️⃣ 角色ID集合
         List<Long> roleIds = roles.stream()
-                .map(BaseEntity::getId)
+                .map(SysRole::getId)
                 .toList();
 
         // 3️⃣ 查询角色-权限关联

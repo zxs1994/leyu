@@ -31,28 +31,65 @@ public class ${entity}ServiceImpl extends ServiceImpl<${entity}Mapper, ${entity}
         Page<${entity}> entityPage = new Page<>(query.getPage(), query.getSize());
         QueryWrapper<${entity}> qw = new QueryWrapper<>();
 
-        <#-- 遍历 queryConfig，如果有 operator 配置，就生成对应条件 -->
-        <#list queryConfig?keys as fieldName>
-        <#assign operator = queryConfig[fieldName]["operator"]!"" >
-        <#if operator??>
-        if (query.get${fieldName?cap_first}() != null) {
+        <#-- 遍历表字段 -->
+        <#list table.fields as field>
+            <#-- 只生成在 queryConfig 中配置过的字段 -->
+            <#if queryConfig[field.propertyName]?exists>
+                <#assign cfg = queryConfig[field.propertyName]>
+                <#assign operator = cfg.operator!"">
+                <#assign column = cfg.column!field.name>
+                <#assign ignoreEmpty = cfg.ignoreEmpty!false>
+                <#assign likeMode = cfg.likeMode!"both">
+
+                <#-- between 单独处理 -->
+                <#if operator == "between">
+        if (query.get${field.propertyName?cap_first}Start() != null
+            && query.get${field.propertyName?cap_first}End() != null) {
+            qw.between(
+                "${column}",
+                query.get${field.propertyName?cap_first}Start(),
+                query.get${field.propertyName?cap_first}End()
+            );
+        }
+                <#else>
+        if (query.get${field.propertyName?cap_first}() != null
+            <#if ignoreEmpty>
+            && StringUtils.hasText(query.get${field.propertyName?cap_first}())
+            </#if>
+        ) {
             <#if operator == "eq">
-            qw.eq("${fieldName}", query.get${fieldName?cap_first}());
+            qw.eq("${column}", query.get${field.propertyName?cap_first}());
+
             <#elseif operator == "like">
-            if (StringUtils.hasText(query.get${fieldName?cap_first}())) {
-                qw.like("${fieldName}", query.get${fieldName?cap_first}());
-            }
+                <#if likeMode == "left">
+            qw.likeLeft("${column}", query.get${field.propertyName?cap_first}());
+                <#elseif likeMode == "right">
+            qw.likeRight("${column}", query.get${field.propertyName?cap_first}());
+                <#else>
+            qw.like("${column}", query.get${field.propertyName?cap_first}());
+                </#if>
+
             <#elseif operator == "in">
-            qw.in("${fieldName}", query.get${fieldName?cap_first}());
+            qw.in("${column}", query.get${field.propertyName?cap_first}());
+
             <#elseif operator == "gt">
-            qw.gt("${fieldName}", query.get${fieldName?cap_first}());
+            qw.gt("${column}", query.get${field.propertyName?cap_first}());
+
+            <#elseif operator == "ge">
+            qw.ge("${column}", query.get${field.propertyName?cap_first}());
+
             <#elseif operator == "lt">
-            qw.lt("${fieldName}", query.get${fieldName?cap_first}());
-            <#elseif operator == "between">
-            qw.between("${fieldName}", query.get${fieldName?cap_first}Start(), query.get${fieldName?cap_first}End());
+            qw.lt("${column}", query.get${field.propertyName?cap_first}());
+
+            <#elseif operator == "le">
+            qw.le("${column}", query.get${field.propertyName?cap_first}());
+
+            <#elseif operator == "ne">
+            qw.ne("${column}", query.get${field.propertyName?cap_first}());
             </#if>
         }
-        </#if>
+                </#if>
+            </#if>
         </#list>
 
         entityPage = super.page(entityPage, qw);

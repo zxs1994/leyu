@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 public class ${entity} extends BaseEntity {
 
 <#list table.fields as field>
+<#if !ignoreFields?seq_contains(field.name)>
     <#-- 主键 -->
     <#if field.keyFlag>
     @TableId(type = IdType.<#if autoIdTables?seq_contains(table.name)>AUTO<#else>ASSIGN_ID</#if>)
@@ -62,5 +63,6 @@ public class ${entity} extends BaseEntity {
     </#if>
     private ${field.propertyType} ${field.propertyName};
 
+</#if>
 </#list>
 }

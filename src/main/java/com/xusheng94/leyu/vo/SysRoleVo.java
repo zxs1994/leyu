@@ -1,6 +1,5 @@
 package com.xusheng94.leyu.vo;
 
-import com.xusheng94.leyu.common.BaseEntity;
 import com.xusheng94.leyu.dto.SysRoleDto;
 import com.xusheng94.leyu.entity.SysPermission;
 import com.xusheng94.leyu.entity.SysRole;
@@ -22,6 +21,6 @@ public class SysRoleVo extends SysRoleDto {
         // 拷贝父类属性
         BeanUtils.copyProperties(sysRole, this);
         this.permissions = permissions;
-        this.setPermissionIds(permissions.stream().map(BaseEntity::getId).toList());
+        this.setPermissionIds(permissions.stream().map(SysPermission::getId).toList());
     }
 }
