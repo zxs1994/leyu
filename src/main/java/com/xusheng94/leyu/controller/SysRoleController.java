@@ -2,12 +2,12 @@ package com.xusheng94.leyu.controller;
 
 import com.xusheng94.leyu.common.BaseQuery;
 import com.xusheng94.leyu.common.BizException;
-import com.xusheng94.leyu.dto.SysRoleDto;
+import com.xusheng94.leyu.model.dto.SysRoleDto;
 import com.xusheng94.leyu.entity.SysRole;
 import com.xusheng94.leyu.service.ISysPermissionService;
 import com.xusheng94.leyu.service.ISysRoleService;
-import com.xusheng94.leyu.vo.SysPermissionTreeNode;
-import com.xusheng94.leyu.vo.SysRoleVo;
+import com.xusheng94.leyu.model.vo.SysPermissionTreeNode;
+import com.xusheng94.leyu.model.vo.SysRoleVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

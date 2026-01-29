@@ -2,10 +2,10 @@ package com.xusheng94.leyu.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xusheng94.leyu.common.BaseQuery;
-import com.xusheng94.leyu.dto.SysRoleDto;
+import com.xusheng94.leyu.model.dto.SysRoleDto;
 import com.xusheng94.leyu.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xusheng94.leyu.vo.SysRoleVo;
+import com.xusheng94.leyu.model.vo.SysRoleVo;
 
 /**
  * <p>

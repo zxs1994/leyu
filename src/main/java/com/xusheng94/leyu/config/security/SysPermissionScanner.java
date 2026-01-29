@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.xusheng94.leyu.config.AuthLevelResolver;
 import com.xusheng94.leyu.entity.SysPermission;
-import com.xusheng94.leyu.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.mapper.SysPermissionMapper;
-import com.xusheng94.leyu.util.PathUtils;
+import com.xusheng94.leyu.common.util.PathUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,6 @@ import java.util.Map;
  *
  * <p>特性：</p>
  * <ul>
- *   <li>仅在 dev 环境生效</li>
  *   <li>支持重复执行（幂等）</li>
  * </ul>
  */

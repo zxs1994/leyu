@@ -1,6 +1,6 @@
 package com.xusheng94.leyu.service;
 
-import com.xusheng94.leyu.vo.SysPermissionTreeNode;
+import com.xusheng94.leyu.model.vo.SysPermissionTreeNode;
 import com.xusheng94.leyu.entity.SysPermission;
 import com.baomidou.mybatisplus.extension.service.IService;
 

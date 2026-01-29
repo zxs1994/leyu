@@ -69,19 +69,19 @@ public class CodeGenerator {
                     injectConfig.customFile(new CustomFile.Builder()
                             .fileName("Dto.java")
                             .templatePath("templates/dto.java.ftl")
-                            .packageName("dto")
+                            .packageName("model.dto")
                             .build());
 
                     injectConfig.customFile(new CustomFile.Builder()
                             .fileName("Vo.java")
                             .templatePath("templates/vo.java.ftl")
-                            .packageName("vo")
+                            .packageName("model.vo")
                             .build());
 
                     injectConfig.customFile(new CustomFile.Builder()
                             .fileName("Query.java")
                             .templatePath("templates/query.java.ftl")
-                            .packageName("query")
+                            .packageName("model.query")
                             .enableFileOverride() // 覆盖生成的文件
                             .build());
                 })
@@ -103,9 +103,9 @@ public class CodeGenerator {
     ) throws IOException {
 
         String controllerPath = outputDir + "/" + basePackage.replace(".", "/") + "/controller";
-        String dtoPath = outputDir + "/" + basePackage.replace(".", "/") + "/dto";
-        String voPath = outputDir + "/" + basePackage.replace(".", "/") + "/vo";
-        String queryPath = outputDir + "/" + basePackage.replace(".", "/") + "/query";
+        String dtoPath = outputDir + "/" + basePackage.replace(".", "/") + "/model/dto";
+        String voPath = outputDir + "/" + basePackage.replace(".", "/") + "/model/vo";
+        String queryPath = outputDir + "/" + basePackage.replace(".", "/") + "/model/query";
 
 
         for (String table : GeneratorConfig.noControllerTables) {

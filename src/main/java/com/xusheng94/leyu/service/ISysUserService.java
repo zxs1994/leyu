@@ -1,13 +1,13 @@
 package com.xusheng94.leyu.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xusheng94.leyu.dto.LoginDto;
-import com.xusheng94.leyu.dto.SysUserDto;
-import com.xusheng94.leyu.query.SysUserQuery;
-import com.xusheng94.leyu.vo.LoginVo;
+import com.xusheng94.leyu.model.dto.LoginDto;
+import com.xusheng94.leyu.model.dto.SysUserDto;
+import com.xusheng94.leyu.model.query.SysUserQuery;
+import com.xusheng94.leyu.model.vo.LoginVo;
 import com.xusheng94.leyu.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xusheng94.leyu.vo.SysUserVo;
+import com.xusheng94.leyu.model.vo.SysUserVo;
 
 /**
  * <p>

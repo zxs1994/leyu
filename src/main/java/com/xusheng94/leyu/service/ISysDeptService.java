@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xusheng94.leyu.common.BaseQuery;
 import com.xusheng94.leyu.entity.SysDept;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xusheng94.leyu.vo.SysDeptTreeNode;
+import com.xusheng94.leyu.model.vo.SysDeptTreeNode;
 
 import java.util.List;
 

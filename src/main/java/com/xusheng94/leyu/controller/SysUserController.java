@@ -2,16 +2,16 @@ package com.xusheng94.leyu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xusheng94.leyu.common.BizException;
-import com.xusheng94.leyu.dto.SysUserDto;
-import com.xusheng94.leyu.dto.UserInfoDto;
+import com.xusheng94.leyu.model.dto.SysUserDto;
+import com.xusheng94.leyu.model.dto.UserInfoDto;
 import com.xusheng94.leyu.entity.SysUser;
 import com.xusheng94.leyu.mapper.SysUserMapper;
-import com.xusheng94.leyu.query.SysUserQuery;
+import com.xusheng94.leyu.model.query.SysUserQuery;
 import com.xusheng94.leyu.service.ISysPermissionService;
 import com.xusheng94.leyu.service.ISysUserService;
-import com.xusheng94.leyu.util.CurrentUser;
-import com.xusheng94.leyu.vo.SysUserInfoVo;
-import com.xusheng94.leyu.vo.SysUserVo;
+import com.xusheng94.leyu.common.util.CurrentUser;
+import com.xusheng94.leyu.model.vo.SysUserInfoVo;
+import com.xusheng94.leyu.model.vo.SysUserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

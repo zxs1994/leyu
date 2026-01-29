@@ -2,7 +2,7 @@ package com.xusheng94.leyu.config.swagger;
 
 import com.xusheng94.leyu.common.NoApiWrap;
 import com.xusheng94.leyu.config.AuthLevelResolver;
-import com.xusheng94.leyu.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;

@@ -2,9 +2,9 @@ package com.xusheng94.leyu.controller;
 
 import com.xusheng94.leyu.common.BizException;
 import com.xusheng94.leyu.entity.SysDept;
-import com.xusheng94.leyu.query.SysDeptQuery;
+import com.xusheng94.leyu.model.query.SysDeptQuery;
 import com.xusheng94.leyu.service.ISysDeptService;
-import com.xusheng94.leyu.vo.SysDeptTreeNode;
+import com.xusheng94.leyu.model.vo.SysDeptTreeNode;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

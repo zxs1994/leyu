@@ -1,9 +1,9 @@
 package com.xusheng94.leyu.controller;
 
-import com.xusheng94.leyu.dto.TenantDto;
+import com.xusheng94.leyu.model.dto.TenantDto;
 import com.xusheng94.leyu.entity.SysDept;
 import com.xusheng94.leyu.service.IPlatformTenantService;
-import com.xusheng94.leyu.vo.LoginVo;
+import com.xusheng94.leyu.model.vo.LoginVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

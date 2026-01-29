@@ -2,11 +2,11 @@ package com.xusheng94.leyu.config.security;
 
 import com.xusheng94.leyu.config.AuthLevelResolver;
 import com.xusheng94.leyu.entity.SysPermission;
-import com.xusheng94.leyu.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.mapper.SysPermissionMapper;
 
-import com.xusheng94.leyu.util.CurrentUser;
-import com.xusheng94.leyu.util.SysPermissionMatcher;
+import com.xusheng94.leyu.common.util.CurrentUser;
+import com.xusheng94.leyu.common.util.SysPermissionMatcher;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

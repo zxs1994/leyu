@@ -1,6 +1,6 @@
 package com.xusheng94.leyu;
 
-import com.xusheng94.leyu.cache.SysPermissionCache;
+import com.xusheng94.leyu.common.cache.SysPermissionCache;
 import com.xusheng94.leyu.common.ApiResponse;
 import com.xusheng94.leyu.config.security.SysPermissionScanner;
 import jakarta.annotation.PostConstruct;

@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.config;
 
 import com.xusheng94.leyu.config.security.SecurityProperties;
-import com.xusheng94.leyu.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;

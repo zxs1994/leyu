@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.controller;
 
-import com.xusheng94.leyu.dto.LoginDto;
-import com.xusheng94.leyu.vo.LoginVo;
+import com.xusheng94.leyu.model.dto.LoginDto;
+import com.xusheng94.leyu.model.vo.LoginVo;
 import com.xusheng94.leyu.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

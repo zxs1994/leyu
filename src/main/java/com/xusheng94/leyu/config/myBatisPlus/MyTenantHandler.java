@@ -2,7 +2,7 @@ package com.xusheng94.leyu.config.myBatisPlus;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.xusheng94.leyu.config.security.LoginUser;
-import com.xusheng94.leyu.util.CurrentUser;
+import com.xusheng94.leyu.common.util.CurrentUser;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.Expression;
 import org.springframework.stereotype.Component;

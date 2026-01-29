@@ -1,12 +1,12 @@
 package com.xusheng94.leyu.config.security;
 
-import com.xusheng94.leyu.cache.SysPermissionCache;
+import com.xusheng94.leyu.common.cache.SysPermissionCache;
 import com.xusheng94.leyu.common.ApiResponse;
 import com.xusheng94.leyu.config.security.jwt.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.xusheng94.leyu.entity.SysPermission;
-import com.xusheng94.leyu.util.SysPermissionMatcher;
+import com.xusheng94.leyu.common.util.SysPermissionMatcher;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

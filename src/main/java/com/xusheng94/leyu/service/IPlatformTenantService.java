@@ -1,8 +1,8 @@
 package com.xusheng94.leyu.service;
 
-import com.xusheng94.leyu.dto.TenantDto;
+import com.xusheng94.leyu.model.dto.TenantDto;
 import com.xusheng94.leyu.entity.SysDept;
-import com.xusheng94.leyu.vo.LoginVo;
+import com.xusheng94.leyu.model.vo.LoginVo;
 
 import java.util.List;
 
