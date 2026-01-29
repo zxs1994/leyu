@@ -1,0 +1,6 @@
+# 由插件生成, 禁止手动修改project.yml, 使用compile生成
+project:
+    name: 乐羽后台管理系统
+    description: Leyu (乐羽) --- 一个轻量、优雅的 Java 模板项目
+    base-package: com.xusheng94.leyu.admin
+    version: 1.0.1

@@ -180,47 +180,53 @@
 
 ```text
 .
-├─ src
-│  ├─ main
-│  │  ├─ java
-│  │  │  └─ com/xusheng94/leyu
-│  │  │     ├─ Application.java              # 🚀 应用启动入口
-│  │  │     ├─ common/                        # 🌐 通用基础模块
-│  │  │     │  ├─ cache/                      # 🔥 缓存（SysPermissionCache 等）
-│  │  │     │  ├─ enums/                      # 📘 枚举定义（Status / Type / SourceType）
-│  │  │     │  └─ util/                       # 🛠️ 通用工具类（EnumUtils / DateUtil 等）
-│  │  │     │  ├─ ApiResponse.java
-│  │  │     │  ├─ BaseEntity.java
-│  │  │     │  └─ BizException.java
-│  │  │     ├─ config/                        # ⚙️ 系统配置（security / swagger / mybatisplus）
-│  │  │     │  ├─ myBatisPlus/
-│  │  │     │  ├─ security/
-│  │  │     │  └─ swagger/
-│  │  │     ├─ controller/                    # 🎯 REST API 控制器（按前缀命名，如 Sys*, Auth*）
-│  │  │     ├─ entity/                        # 🧩 数据库实体（可按需求子包，例如 sys/ platform/）
-│  │  │     ├─ mapper/                        # 🗄️ MyBatis-Plus Mapper（含 xml/）
-│  │  │     ├─ service/                       # 🧠 业务层接口与实现（service.impl）
-│  │  │     └─ model/                         # 📦 传输模型（已合并 dto/query/vo）
-│  │  │        ├─ dto/
-│  │  │        ├─ query/
-│  │  │        └─ vo/   
-│  │  └─ resources
-│  │     ├─ application.yml                  # 主配置文件
-│  │     ├─ application-dev.yml              # 开发环境
-│  │     ├─ application-prod.yml             # 生产环境
-│  │     ├─ project.yml                      # 插件生成的项目元数据（由 maven-antrun 生成）
-│  │     └─ templates/                       # 🧬 Freemarker 代码生成模板（CodeGenerator 使用）
-│  │        ├─ controller.java.ftl
-│  │     	└─ entity.java.ftl
-│  └─ devtools
-│     ├─ devtools/CodeGenerator.java         # 🧪 代码生成器入口（运行在项目根）
-│     └─ devtools/LoadYaml.java              # Yaml 加载工具
-├─ img/                                     # 🖼️ README 使用的图片资源
-├─ init.sql                                 # 🗄️ 数据库初始化脚本
-├─ deploy.sh                                # 🚢 部署脚本
-├─ LICENSE                                  # 📄 MIT License
-├─ pom.xml                                  # 📦 Maven 配置
-└─ README.md                                # 📘 项目说明
+├─ leyu-admin/                               # 🎯 业务应用模块（后台管理系统）
+│  ├─ src/main/java
+│  │  └─ com/xusheng94/leyu/admin
+│  │     ├─ Application.java                 # 🚀 应用启动入口
+│  │     ├─ common/                          # 🌐 通用基础模块
+│  │     │  ├─ cache/                        # 🔥 缓存（SysPermissionCache 等）
+│  │     │  ├─ enums/                        # 📘 枚举定义（Status / Type / SourceType）
+│  │     │  └─ util/                         # 🛠️ 通用工具类（EnumUtils / DateUtil 等）
+│  │     ├─ config/                          # ⚙️ 系统配置（security / swagger / mybatisplus）
+│  │     │  ├─ myBatisPlus/
+│  │     │  ├─ security/
+│  │     │  └─ swagger/
+│  │     ├─ controller/                      # 🎯 REST API 控制器（按前缀命名，如 Sys*, Auth*）
+│  │     ├─ entity/                          # 🧩 数据库实体
+│  │     ├─ mapper/                          # 🗄️ MyBatis-Plus Mapper（含 xml/）
+│  │     ├─ service/                         # 🧠 业务层接口与实现（service.impl）
+│  │     └─ model/                           # 📦 传输模型（dto/query/vo）
+│  │        ├─ dto/
+│  │        ├─ query/
+│  │        └─ vo/
+│  └─ src/main/resources
+│     ├─ application.yml                     # 主配置文件
+│     ├─ application-dev.yml                 # 开发环境
+│     ├─ application-prod.yml                # 生产环境
+│     └─ project.yml                         # 插件生成的项目元数据
+│
+├─ leyu-generator/                           # 🧬 代码生成器模块
+│  ├─ src/main/java
+│  │  └─ com/xusheng94/leyu/generator
+│  │     ├─ CodeGenerator.java               # 🧪 代码生成器入口
+│  │     ├─ GeneratorConfig.java             # 生成器配置
+│  │     └─ LoadYaml.java                    # Yaml 加载工具
+│  └─ src/main/resources/templates/          # 🧬 Freemarker 代码生成模板
+│     ├─ controller.java.ftl
+│     ├─ entity.java.ftl
+│     ├─ dto.java.ftl
+│     └─ vo.java.ftl
+│
+├─ docker/                                   # 🐳 Docker 配置
+│  └─ Dockerfile
+├─ img/                                      # 🖼️ README 使用的图片资源
+├─ .mvn/                                     # Maven Wrapper 配置
+├─ init.sql                                  # 🗄️ 数据库初始化脚本
+├─ deploy.sh                                 # 🚢 部署脚本
+├─ LICENSE                                   # 📄 MIT License
+├─ pom.xml                                   # 📦 父 POM（多模块管理）
+└─ README.md                                 # 📘 项目说明
 
 ```
 

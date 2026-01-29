@@ -4,8 +4,8 @@ echo "=============================="
 echo "Deploy current directory JAR"
 echo "=============================="
 
-# 找到当前目录最新的 jar
-APP_NAME=$(ls -t *.jar 2>/dev/null | head -n 1)
+# 找到当前目录最新版本的 jar（按版本号排序，排除 original）
+APP_NAME=$(ls -1 *.jar 2>/dev/null | grep -v original | sort -V | tail -n 1)
 
 if [ -z "$APP_NAME" ]; then
   echo "❌ No jar file found in current directory"
@@ -14,8 +14,8 @@ fi
 
 echo "✅ Found JAR: $APP_NAME"
 
-# 查找正在运行的进程（只匹配这个 jar）
-pids=$(ps -ef | grep "$APP_NAME" | grep -v grep | awk '{print $2}')
+# 查找正在运行的进程（匹配 leyu-admin 的任何版本）
+pids=$(ps -ef | grep "leyu-admin.*jar" | grep -v grep | awk '{print $2}')
 
 if [ -n "$pids" ]; then
   echo "🛑 Stopping old process..."
