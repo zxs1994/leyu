@@ -1,14 +1,14 @@
 server:
-  port: 8088
+    port: 8088
 
 spring:
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&&serverTimezone=UTC&useSSL=false
-    username: root
-    password: ""
+    datasource:
+        url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&&serverTimezone=UTC&useSSL=false
+        username: root
+        password: ""
 
 # 权限扫描开关
 # true  ：启动时扫描 Controller 并同步权限到数据库（可能覆盖/恢复权限数据）
 # false ：不自动扫描
 sys-permission:
-  scan-on-startup: false
+    scan-on-startup: false

@@ -17,7 +17,7 @@
 <#assign entityShortComment = commentParts[commentParts?size - 1]>
 package ${package.Controller};
 
-import ${basePackage}.common.BizException;
+import ${parentPackage}.common.BizException;
 import ${package.Entity}.${entity};
 import ${package.Service}.I${entity}Service;
 import ${package.Query}.${entity}Query;

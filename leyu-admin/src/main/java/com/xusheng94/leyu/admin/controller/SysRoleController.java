@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin.controller;
 
-import com.xusheng94.leyu.admin.common.BaseQuery;
-import com.xusheng94.leyu.admin.common.BizException;
+import com.xusheng94.leyu.common.BaseQuery;
+import com.xusheng94.leyu.common.BizException;
 import com.xusheng94.leyu.admin.model.dto.SysRoleDto;
 import com.xusheng94.leyu.admin.entity.SysRole;
 import com.xusheng94.leyu.admin.service.ISysPermissionService;

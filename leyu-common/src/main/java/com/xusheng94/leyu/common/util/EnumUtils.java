@@ -1,9 +1,9 @@
-package com.xusheng94.leyu.admin.common.util;
+package com.xusheng94.leyu.common.util;
 
+import com.xusheng94.leyu.common.BaseEnum;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
-import com.xusheng94.leyu.admin.common.BaseEnum;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class EnumUtils {
+
+    public static Map<String, List<Map<String, Object>>> loadAllEnums() {
+        return loadAllEnums(resolveEnumPackage());
+    }
 
     public static Map<String, List<Map<String, Object>>> loadAllEnums(String packageName) {
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
@@ -52,5 +56,9 @@ public class EnumUtils {
             throw new RuntimeException("加载枚举失败", e);
         }
         return result;
+    }
+
+    private static String resolveEnumPackage() {
+        return BaseEnum.class.getPackage().getName() + ".enums";
     }
 }

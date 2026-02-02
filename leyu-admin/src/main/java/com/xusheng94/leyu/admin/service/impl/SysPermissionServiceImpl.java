@@ -1,8 +1,8 @@
 package com.xusheng94.leyu.admin.service.impl;
 
-import com.xusheng94.leyu.admin.common.cache.SysPermissionCache;
-import com.xusheng94.leyu.admin.common.util.SysPermissionMatcher;
-import com.xusheng94.leyu.admin.common.util.TreeUtils;
+import com.xusheng94.leyu.admin.cache.SysPermissionCache;
+import com.xusheng94.leyu.admin.util.SysPermissionMatcher;
+import com.xusheng94.leyu.admin.util.TreeUtils;
 import com.xusheng94.leyu.admin.model.vo.SysPermissionTreeNode;
 import com.xusheng94.leyu.admin.entity.SysPermission;
 import com.xusheng94.leyu.admin.mapper.SysPermissionMapper;

@@ -12,6 +12,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.xusheng94.leyu.common.config.SwaggerCustomizerProvider;
 
 
 @Configuration

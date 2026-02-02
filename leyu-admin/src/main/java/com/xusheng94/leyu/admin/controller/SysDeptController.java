@@ -1,6 +1,6 @@
 package com.xusheng94.leyu.admin.controller;
 
-import com.xusheng94.leyu.admin.common.BizException;
+import com.xusheng94.leyu.common.BizException;
 import com.xusheng94.leyu.admin.entity.SysDept;
 import com.xusheng94.leyu.admin.model.query.SysDeptQuery;
 import com.xusheng94.leyu.admin.service.ISysDeptService;

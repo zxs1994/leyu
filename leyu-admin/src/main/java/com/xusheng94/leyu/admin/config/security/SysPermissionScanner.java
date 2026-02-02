@@ -2,11 +2,11 @@ package com.xusheng94.leyu.admin.config.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.xusheng94.leyu.admin.config.AuthLevelResolver;
+import com.xusheng94.leyu.common.config.IAuthLevelResolver;
 import com.xusheng94.leyu.admin.entity.SysPermission;
-import com.xusheng94.leyu.admin.common.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.admin.mapper.SysPermissionMapper;
-import com.xusheng94.leyu.admin.common.util.PathUtils;
+import com.xusheng94.leyu.admin.util.PathUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class SysPermissionScanner {
 
     private final ApplicationContext applicationContext;
     private final SysPermissionMapper sysPermissionMapper;
-    private final AuthLevelResolver authLevelResolver;
+    private final IAuthLevelResolver authLevelResolver;
 
     public void scanAndSave() {
 

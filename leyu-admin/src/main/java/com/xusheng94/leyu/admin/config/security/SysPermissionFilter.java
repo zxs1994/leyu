@@ -1,12 +1,12 @@
 package com.xusheng94.leyu.admin.config.security;
 
-import com.xusheng94.leyu.admin.config.AuthLevelResolver;
+import com.xusheng94.leyu.common.config.IAuthLevelResolver;
 import com.xusheng94.leyu.admin.entity.SysPermission;
-import com.xusheng94.leyu.admin.common.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.admin.mapper.SysPermissionMapper;
 
-import com.xusheng94.leyu.admin.common.util.CurrentUser;
-import com.xusheng94.leyu.admin.common.util.SysPermissionMatcher;
+import com.xusheng94.leyu.admin.util.CurrentUser;
+import com.xusheng94.leyu.admin.util.SysPermissionMatcher;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.util.List;
 public class SysPermissionFilter extends OncePerRequestFilter {
 
     private final SysPermissionMapper sysPermissionMapper;
-    private final AuthLevelResolver authLevelResolver;
+    private final IAuthLevelResolver authLevelResolver;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,

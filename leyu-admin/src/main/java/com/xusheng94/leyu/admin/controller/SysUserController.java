@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.xusheng94.leyu.admin.common.BizException;
+import com.xusheng94.leyu.common.BizException;
 import com.xusheng94.leyu.admin.model.dto.SysUserDto;
 import com.xusheng94.leyu.admin.model.dto.UserInfoDto;
 import com.xusheng94.leyu.admin.entity.SysUser;
@@ -9,7 +9,7 @@ import com.xusheng94.leyu.admin.mapper.SysUserMapper;
 import com.xusheng94.leyu.admin.model.query.SysUserQuery;
 import com.xusheng94.leyu.admin.service.ISysPermissionService;
 import com.xusheng94.leyu.admin.service.ISysUserService;
-import com.xusheng94.leyu.admin.common.util.CurrentUser;
+import com.xusheng94.leyu.admin.util.CurrentUser;
 import com.xusheng94.leyu.admin.model.vo.SysUserInfoVo;
 import com.xusheng94.leyu.admin.model.vo.SysUserVo;
 import lombok.RequiredArgsConstructor;

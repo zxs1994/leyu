@@ -1,14 +1,15 @@
 package com.xusheng94.leyu.admin.config;
 
 import com.xusheng94.leyu.admin.config.security.SecurityProperties;
-import com.xusheng94.leyu.admin.common.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import com.xusheng94.leyu.common.config.IAuthLevelResolver;
 
 @Component
 @RequiredArgsConstructor
-public class AuthLevelResolver {
+public class AuthLevelResolver implements IAuthLevelResolver {
 
     private final SecurityProperties securityProperties;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();

@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.common;
+package com.xusheng94.leyu.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

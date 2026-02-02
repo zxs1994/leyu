@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.config;
+package com.xusheng94.leyu.common.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

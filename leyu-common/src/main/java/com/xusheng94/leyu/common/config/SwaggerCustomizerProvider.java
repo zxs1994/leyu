@@ -1,15 +1,15 @@
-package com.xusheng94.leyu.admin.config.swagger;
+package com.xusheng94.leyu.common.config;
 
-import com.xusheng94.leyu.admin.common.NoApiWrap;
-import com.xusheng94.leyu.admin.config.AuthLevelResolver;
-import com.xusheng94.leyu.admin.common.enums.AuthLevel;
+import com.xusheng94.leyu.common.NoApiWrap;
+import com.xusheng94.leyu.common.config.IAuthLevelResolver;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.stereotype.Component;
-import com.xusheng94.leyu.admin.common.ApiResponse;
+import com.xusheng94.leyu.common.ApiResponse;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,12 +18,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SwaggerCustomizerProvider {
 
-    private final AuthLevelResolver authLevelResolver;
+    private final IAuthLevelResolver authLevelResolver;
 
     /**
      * 每个接口的 Operation 自定义，用于包装 200 响应为 ApiResponse<T>
      */
-    OperationCustomizer apiResponseCustomizer() {
+    public OperationCustomizer apiResponseCustomizer() {
         return (operation, handlerMethod) -> {
             // 1️⃣ NoApiWrap
             boolean noWrap = handlerMethod.hasMethodAnnotation(NoApiWrap.class)
@@ -75,7 +75,7 @@ public class SwaggerCustomizerProvider {
     /**
      * 用于控制每个接口右边有没有🔒, 不在白名单的都加锁
      */
-    OpenApiCustomizer securityCustomizer() {
+    public OpenApiCustomizer securityCustomizer() {
 
         return openApi -> openApi.getPaths().forEach((path, pathItem) -> {
             AuthLevel level = authLevelResolver.resolve(path);

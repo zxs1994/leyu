@@ -1,6 +1,6 @@
 package com.xusheng94.leyu.admin.model.query;
 
-import com.xusheng94.leyu.admin.common.BaseQuery;
+import com.xusheng94.leyu.common.BaseQuery;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class SysUserQuery extends BaseQuery {

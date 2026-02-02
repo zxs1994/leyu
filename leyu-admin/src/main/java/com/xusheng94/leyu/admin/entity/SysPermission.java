@@ -5,7 +5,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
-import com.xusheng94.leyu.admin.common.BaseEntity;
+import com.xusheng94.leyu.common.BaseEntity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;

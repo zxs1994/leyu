@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xusheng94.leyu.admin.common.BaseQuery;
+import com.xusheng94.leyu.common.BaseQuery;
 import com.xusheng94.leyu.admin.model.dto.SysRoleDto;
 import com.xusheng94.leyu.admin.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;

@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.common;
+package com.xusheng94.leyu.common;
 
 public interface BaseEnum<T> {
     T getCode();

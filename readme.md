@@ -17,7 +17,7 @@
 
 ## 预览说明
 
-**提示**：由于q前端使用的是海外免费的部署服务，首屏加载会较慢。
+**提示**：网站采用单点登录
 
 ### UI 界面
 访问主站：  
@@ -184,10 +184,6 @@
 │  ├─ src/main/java
 │  │  └─ com/xusheng94/leyu/admin
 │  │     ├─ Application.java                 # 🚀 应用启动入口
-│  │     ├─ common/                          # 🌐 通用基础模块
-│  │     │  ├─ cache/                        # 🔥 缓存（SysPermissionCache 等）
-│  │     │  ├─ enums/                        # 📘 枚举定义（Status / Type / SourceType）
-│  │     │  └─ util/                         # 🛠️ 通用工具类（EnumUtils / DateUtil 等）
 │  │     ├─ config/                          # ⚙️ 系统配置（security / swagger / mybatisplus）
 │  │     │  ├─ myBatisPlus/
 │  │     │  ├─ security/
@@ -205,6 +201,17 @@
 │     ├─ application-dev.yml                 # 开发环境
 │     ├─ application-prod.yml                # 生产环境
 │     └─ project.yml                         # 插件生成的项目元数据
+│
+├─ leyu-common/                              # 🧩 公共基础模块（可复用组件）
+│  ├─ src/main/java
+│  │  └─ com/xusheng94/leyu/common
+│  │     ├─ cache/                            # 🔥 缓存（EnumCache 等）
+│  │     ├─ config/                           # ⚙️ 通用配置（Swagger / Jackson 等）
+│  │     ├─ enums/                            # 📘 公共枚举（AuthLevel / SourceType 等）
+│  │     ├─ util/                             # 🛠️ 工具类（EnumUtils / DateUtil 等）
+│  │     └─ BaseEntity.java                   # 🧩 通用实体基类
+│  └─ src/main/resources
+│     └─ application-common.yml               # 公共配置（供其他模块引用）
 │
 ├─ leyu-generator/                           # 🧬 代码生成器模块
 │  ├─ src/main/java

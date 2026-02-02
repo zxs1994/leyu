@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin.model.vo;
 
 import com.xusheng94.leyu.admin.entity.SysUser;
-import com.xusheng94.leyu.admin.common.util.CurrentUser;
+import com.xusheng94.leyu.admin.util.CurrentUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

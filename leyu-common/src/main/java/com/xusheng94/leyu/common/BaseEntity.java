@@ -1,6 +1,7 @@
-package com.xusheng94.leyu.admin.common;
+package com.xusheng94.leyu.common;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

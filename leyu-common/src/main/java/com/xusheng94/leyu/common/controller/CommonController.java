@@ -1,6 +1,6 @@
-package com.xusheng94.leyu.admin.controller;
+package com.xusheng94.leyu.common.controller;
 
-import com.xusheng94.leyu.admin.common.cache.EnumCache;
+import com.xusheng94.leyu.common.cache.EnumCache;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

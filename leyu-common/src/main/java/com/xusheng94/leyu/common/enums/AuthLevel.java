@@ -1,6 +1,6 @@
-package com.xusheng94.leyu.admin.common.enums;
+package com.xusheng94.leyu.common.enums;
 
-import com.xusheng94.leyu.admin.common.BaseEnum;
+import com.xusheng94.leyu.common.BaseEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

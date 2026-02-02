@@ -26,6 +26,7 @@ public class CodeGenerator {
         String url = LoadYaml.getDevProperty("spring", "datasource", "url");
         String username = LoadYaml.getDevProperty("spring", "datasource", "username");
         String password = LoadYaml.getDevProperty("spring", "datasource", "password");
+        String parentPackage = LoadYaml.getParentPackage();
         String basePackage = LoadYaml.getBasePackage();
 
 //        System.out.println("url: " + url);
@@ -71,6 +72,7 @@ public class CodeGenerator {
                     Map<String, Object> customMap = new HashMap<>();
 
                     customMap.put("basePackage", basePackage);
+                    customMap.put("parentPackage", parentPackage);
                     customMap.put("autoIdTables", GeneratorConfig.autoIdTables);
                     customMap.put("readOnlyFields", GeneratorConfig.readOnlyFields);
                     customMap.put("ignoreFields", GeneratorConfig.ignoreFields);
@@ -94,7 +96,7 @@ public class CodeGenerator {
                             .fileName("Query.java")
                             .templatePath("templates/query.java.ftl")
                             .packageName("model.query")
-                            .enableFileOverride() // 覆盖生成的文件
+//                            .enableFileOverride() // 覆盖生成的文件
                             .build());
                 })
                 .execute();

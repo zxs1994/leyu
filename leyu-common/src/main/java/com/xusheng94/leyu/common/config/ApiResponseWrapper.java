@@ -1,6 +1,6 @@
-package com.xusheng94.leyu.admin.config;
+package com.xusheng94.leyu.common.config;
 
-import com.xusheng94.leyu.admin.common.BizException;
+import com.xusheng94.leyu.common.BizException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.core.MethodParameter;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import com.xusheng94.leyu.admin.common.ApiResponse;
-import com.xusheng94.leyu.admin.common.NoApiWrap;
+import com.xusheng94.leyu.common.ApiResponse;
+import com.xusheng94.leyu.common.NoApiWrap;
 
 import java.util.stream.Collectors;
 

@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.common.util;
+package com.xusheng94.leyu.admin.util;
 
 import java.util.*;
 import java.util.stream.Collectors;

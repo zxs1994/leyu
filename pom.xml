@@ -15,6 +15,7 @@
     <modules>
         <module>leyu-admin</module>
         <module>leyu-generator</module>
+        <module>leyu-common</module>
     </modules>
 
     <properties>
@@ -23,12 +24,16 @@
         <spring-boot.version>3.5.5</spring-boot.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <mybatis-plus-generator.version>3.5.15</mybatis-plus-generator.version>
+        <mybatis.version>3.5.19</mybatis.version>
         <jjwt.version>0.11.5</jjwt.version>
         <springdoc.version>2.8.13</springdoc.version>
+        <swagger-annotations.version>2.2.38</swagger-annotations.version>
+        <swagger-models.version>2.2.38</swagger-models.version>
         <lombok.version>1.18.30</lombok.version>
         <freemarker.version>2.3.32</freemarker.version>
         <mysql-connector.version>8.3.0</mysql-connector.version>
         <postgresql.version>42.7.3</postgresql.version>
+        <jackson.version>2.19.2</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -51,8 +56,21 @@
 
             <dependency>
                 <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-annotation</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus-generator.version}</version>
+            </dependency>
+
+            <!-- MyBatis -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
             </dependency>
 
             <!-- JWT -->
@@ -83,12 +101,39 @@
                 <version>${springdoc.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-common</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
+            <!-- Swagger Annotations (Jakarta) -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${swagger-annotations.version}</version>
+            </dependency>
+
+            <!-- Swagger Models (Jakarta) -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-models-jakarta</artifactId>
+                <version>${swagger-models.version}</version>
+            </dependency>
+
             <!-- Lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <!-- Jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- Freemarker -->

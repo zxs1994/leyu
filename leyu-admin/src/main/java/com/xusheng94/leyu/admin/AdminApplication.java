@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin;
 
-import com.xusheng94.leyu.admin.common.cache.SysPermissionCache;
-import com.xusheng94.leyu.admin.common.ApiResponse;
+import com.xusheng94.leyu.admin.cache.SysPermissionCache;
+import com.xusheng94.leyu.common.ApiResponse;
 import com.xusheng94.leyu.admin.config.security.SysPermissionScanner;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "${project.base-package}",
+        "${project.parent-package}.common"
+})
 @RequiredArgsConstructor
 public class AdminApplication {
 

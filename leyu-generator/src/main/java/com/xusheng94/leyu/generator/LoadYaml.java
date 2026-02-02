@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public class LoadYaml {
@@ -144,6 +142,10 @@ public class LoadYaml {
 
     public static String getBasePackage() {
         return (String) get(app(), "project", "base-package");
+    }
+
+    public static String getParentPackage() {
+        return (String) get(app(), "project", "parent-package");
     }
 
     public static String getProperty(String... keys) {

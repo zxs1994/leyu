@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.common;
+package com.xusheng94.leyu.common;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

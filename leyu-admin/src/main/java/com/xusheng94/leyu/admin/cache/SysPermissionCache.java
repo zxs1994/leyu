@@ -1,9 +1,9 @@
-package com.xusheng94.leyu.admin.common.cache;
+package com.xusheng94.leyu.admin.cache;
 
 import com.xusheng94.leyu.admin.entity.SysPermission;
-import com.xusheng94.leyu.admin.common.enums.AuthLevel;
+import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.admin.mapper.SysPermissionMapper;
-import com.xusheng94.leyu.admin.common.util.CurrentUser;
+import com.xusheng94.leyu.admin.util.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

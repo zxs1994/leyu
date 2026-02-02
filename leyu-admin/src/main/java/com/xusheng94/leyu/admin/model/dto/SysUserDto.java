@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin.model.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.xusheng94.leyu.admin.config.LongListToStringSerializer;
+import com.xusheng94.leyu.common.config.LongListToStringSerializer;
 import com.xusheng94.leyu.admin.entity.SysUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

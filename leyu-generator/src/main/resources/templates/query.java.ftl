@@ -1,6 +1,6 @@
 package ${package.Query};
 
-import ${basePackage}.common.BaseQuery;
+import ${parentPackage}.common.BaseQuery;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

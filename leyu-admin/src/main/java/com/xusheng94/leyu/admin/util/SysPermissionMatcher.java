@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.common.util;
+package com.xusheng94.leyu.admin.util;
 
 import com.xusheng94.leyu.admin.entity.SysPermission;
 import org.springframework.util.AntPathMatcher;

@@ -1,19 +1,19 @@
 server:
-  port: 8088
+    port: 8088
 
 spring:
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/leyu?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
-    username: root
-    password: grpIjEP%X8nd
+    datasource:
+        url: jdbc:mysql://127.0.0.1:3306/leyu?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
+        username: root
+        password: grpIjEP%X8nd
 
 # 指定log生成地址
 logging:
-  file:
-    name: logs/app.log
+    file:
+        name: logs/app.log
 
 # 权限扫描开关
 # true  ：启动时扫描 Controller 并同步权限到数据库（可能覆盖/恢复权限数据）
 # false ：不自动扫描
 sys-permission:
-  scan-on-startup: true
+    scan-on-startup: true

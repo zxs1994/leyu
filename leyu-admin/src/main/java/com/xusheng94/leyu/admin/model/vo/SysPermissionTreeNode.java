@@ -1,7 +1,7 @@
 package com.xusheng94.leyu.admin.model.vo;
 
 import com.xusheng94.leyu.admin.entity.SysPermission;
-import com.xusheng94.leyu.admin.common.util.TreeUtils;
+import com.xusheng94.leyu.admin.util.TreeUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
