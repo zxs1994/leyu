@@ -20,11 +20,14 @@ security:
         - /v3/api-docs/**
         - /favicon.ico
         - /common/**
-        - /auth/**
+        - /auth/login
+        - /auth/refresh
     login-only-urls:
         - /sys/user/info
         - /sys/profile
         - /sys/password
+        - /auth/**
+        - /auth/logout
     platform-only-urls:
         - /platform/**
         - /sys/permission/**
@@ -36,3 +39,4 @@ security:
 jwt:
     secret: xusheng-secret-key-please-change-to-strong-key
     expire-days: 3
+    refresh-expire-days: 7

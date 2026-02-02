@@ -8,34 +8,43 @@ public class GeneratorConfig {
      * 不生成控制器的表
      */
     public static final Set<String> noControllerTables = Set.of(
-            "sys__user_role",
-            "sys__role_permission"
+	    "sys__user_role",
+	    "sys__role_permission"
     );
 
     /**
      * 使用自增ID的表
      */
     public static final Set<String> autoIdTables = Set.of(
-            "sys__permission",
-            "sys__user_role",
-            "sys__role_permission"
+	    "sys__permission",
+	    "sys__user_role",
+	    "sys__role_permission"
     );
 
     /**
      * 只读字段
      */
     public static final Set<String> readOnlyFields = Set.of(
-            "id",
-            "source",
-            "token_version"
+	    "id",
+	    "source",
+	    "token_version"
+    );
+
+    /**
+     * @JsonIgnore
+     */
+    public static final Set<String> jsonIgnoreFields = Set.of(
+	    "refresh_expire_at",
+	    "refresh_token",
+		"tenant_id"
     );
 
     /**
      * 忽略字段
      */
     public static final Set<String> ignoreFields = Set.of(
-            "created_at",
-            "updated_at"
+	    "created_at",
+	    "updated_at"
     );
 
     /**
@@ -106,21 +115,21 @@ public class GeneratorConfig {
      * </p>
      */
     public static final Map<String, Map<String, Object>> queryConfig = Map.of(
-            "name", Map.of(
-                    "column", "name",
-                    "operator", "like",
-                    "likeMode", "both",
-                    "ignoreEmpty", true
-            ),
-            "status", Map.of(
-                    "column", "status",
-                    "operator", "eq"
-            ),
-            "createdAt", Map.of(
-                    "column", "created_at",
-                    "operator", "between",
-                    "fieldType", "OffsetDateTime"
-            )
+	    "name", Map.of(
+		    "column", "name",
+		    "operator", "like",
+		    "likeMode", "both",
+		    "ignoreEmpty", true
+	    ),
+	    "status", Map.of(
+		    "column", "status",
+		    "operator", "eq"
+	    ),
+	    "createdAt", Map.of(
+		    "column", "created_at",
+		    "operator", "between",
+		    "fieldType", "OffsetDateTime"
+	    )
     );
 
 

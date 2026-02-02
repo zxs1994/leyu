@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.xusheng94</groupId>
         <artifactId>leyu</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>com.xusheng94</groupId>
             <artifactId>leyu-common</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

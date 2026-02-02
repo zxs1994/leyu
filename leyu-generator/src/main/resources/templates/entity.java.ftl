@@ -10,6 +10,15 @@ import ${parentPackage}.common.BaseEntity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+<#assign hasOffsetDateTime = false>
+<#list table.fields as field>
+    <#if field.propertyType == "OffsetDateTime">
+        <#assign hasOffsetDateTime = true>
+    </#if>
+</#list>
+<#if hasOffsetDateTime>
+import java.time.OffsetDateTime;
+</#if>
 
 /**
  * <p>
@@ -33,7 +42,7 @@ public class ${entity} extends BaseEntity {
     @TableId(type = IdType.<#if autoIdTables?seq_contains(table.name)>AUTO<#else>ASSIGN_ID</#if>)
     </#if>
     <#-- 自动忽略敏感字段 -->
-    <#if field.name == "tenant_id">
+    <#if jsonIgnoreFields?seq_contains(field.name)>
     @JsonIgnore
     </#if>
     <#-- 密码类字段：只写 -->

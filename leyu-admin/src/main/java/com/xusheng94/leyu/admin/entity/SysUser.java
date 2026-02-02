@@ -10,6 +10,7 @@ import com.xusheng94.leyu.common.BaseEntity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import java.time.OffsetDateTime;
 
 /**
  * <p>
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
  * </p>
  *
  * @author xusheng
- * @since 2026-01-22 19:50:06
+ * @since 2026-02-02 19:13:06
  */
 
 @Data
@@ -54,6 +55,14 @@ public class SysUser extends BaseEntity {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "token版本")
     private Integer tokenVersion;
+
+    @JsonIgnore
+    @Schema(description = "刷新token(哈希)")
+    private String refreshToken;
+
+    @JsonIgnore
+    @Schema(description = "刷新token过期时间")
+    private OffsetDateTime refreshExpireAt;
 
     @Schema(description = "排序")
     private Integer sort;

@@ -109,6 +109,9 @@ public class SecurityConfig {
             Exception e
     ) throws IOException {
         int code = response.getStatus();
+        if (Boolean.TRUE.equals(request.getAttribute(JwtAuthenticationFilter.AUTH_EXPIRED_ATTR))) {
+            code = 498;
+        }
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
         ApiResponse<?> body;

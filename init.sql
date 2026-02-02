@@ -34,6 +34,8 @@ CREATE TABLE `sys__user` (
   `name` VARCHAR(255) NOT NULL COMMENT '用户名',
   `password` VARCHAR(255) NOT NULL COMMENT '密码',
   `token_version` INT NOT NULL DEFAULT 0 COMMENT 'token版本',
+  `refresh_token` VARCHAR(255) DEFAULT NULL COMMENT '刷新token(哈希)',
+  `refresh_expire_at` TIMESTAMP NULL DEFAULT NULL COMMENT '刷新token过期时间',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序',
   `source` VARCHAR(20) NOT NULL DEFAULT 'USER' COMMENT '数据来源：SYSTEM=系统内置，USER=用户创建',
   `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '状态：1=启用，0=停用',

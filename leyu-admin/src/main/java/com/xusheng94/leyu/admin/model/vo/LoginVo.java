@@ -8,4 +8,6 @@ import lombok.Data;
 public class LoginVo {
 
     private String token;
+
+    private String refreshToken;
 }

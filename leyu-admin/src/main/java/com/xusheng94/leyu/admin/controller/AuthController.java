@@ -1,6 +1,7 @@
 package com.xusheng94.leyu.admin.controller;
 
 import com.xusheng94.leyu.admin.model.dto.LoginDto;
+import com.xusheng94.leyu.admin.model.dto.RefreshTokenDto;
 import com.xusheng94.leyu.admin.model.vo.LoginVo;
 import com.xusheng94.leyu.admin.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,12 @@ public class AuthController {
     @Operation(summary = "用户登出")
     public void logout() {
         sysUserService.logout();
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "刷新 token")
+    public LoginVo refresh(@RequestBody RefreshTokenDto req) {
+        return sysUserService.refreshToken(req.getRefreshToken());
     }
 
 }

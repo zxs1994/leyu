@@ -86,6 +86,7 @@ public class ApiResponse<T> {
         return switch (status) {
             case 401 -> "请重新登录";
             case 403 -> "没有权限";
+            case 498 -> "token已过期";
             default -> "请求失败";
         };
     }

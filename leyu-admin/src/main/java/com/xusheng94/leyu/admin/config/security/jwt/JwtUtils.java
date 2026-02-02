@@ -92,6 +92,20 @@ public class JwtUtils {
     }
 
     /**
+     * 判断 token 是否过期
+     */
+    public boolean isTokenExpired(String token) {
+        try {
+            parseToken(token);
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
+    /**
      * 解析 token
      */
     private Jws<Claims> parseToken(String token) {

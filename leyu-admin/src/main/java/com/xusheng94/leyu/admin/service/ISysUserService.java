@@ -20,6 +20,8 @@ import com.xusheng94.leyu.admin.model.vo.SysUserVo;
 public interface ISysUserService extends IService<SysUser> {
     LoginVo login(LoginDto req);
 
+    LoginVo refreshToken(String refreshToken);
+
     void logout();
 
     Long save(SysUserDto sysUser);

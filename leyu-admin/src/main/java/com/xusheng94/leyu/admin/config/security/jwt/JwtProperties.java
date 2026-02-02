@@ -26,10 +26,25 @@ public class JwtProperties {
      */
     private long expireMillis;
 
+    /**
+     * refresh token 过期天数（从配置文件读取）
+     */
+    private int refreshExpireDays;
+
+    /**
+     * refresh token 过期毫秒数（计算得出，不从配置读）
+     */
+    private long refreshExpireMillis;
+
     public void setExpireDays(int expireDays) {
         this.expireDays = expireDays;
         // ⚠️ 一定要用 long 参与计算
         this.expireMillis = expireDays * 24L * 60 * 60 * 1000;
+    }
+
+    public void setRefreshExpireDays(int refreshExpireDays) {
+        this.refreshExpireDays = refreshExpireDays;
+        this.refreshExpireMillis = refreshExpireDays * 24L * 60 * 60 * 1000;
     }
 
 }

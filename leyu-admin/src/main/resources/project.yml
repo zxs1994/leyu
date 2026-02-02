@@ -4,4 +4,4 @@ project:
     description: Leyu (乐羽) --- 一个轻量、优雅的 Java 模板项目
     parent-package: com.xusheng94.leyu
     base-package: com.xusheng94.leyu.admin
-    version: 1.0.1
+    version: 1.0.2

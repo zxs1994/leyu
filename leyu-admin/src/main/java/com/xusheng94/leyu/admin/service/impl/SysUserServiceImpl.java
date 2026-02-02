@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xusheng94.leyu.common.BizException;
+import com.xusheng94.leyu.admin.config.security.jwt.JwtProperties;
 import com.xusheng94.leyu.admin.model.dto.LoginDto;
 import com.xusheng94.leyu.admin.model.dto.SysUserDto;
 import com.xusheng94.leyu.admin.entity.SysDept;
@@ -30,7 +31,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.Base64;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,6 +54,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final JwtProperties jwtProperties;
     private final ISysUserRoleService sysUserRoleService;
     private final SysDeptMapper sysDeptMapper;
 
@@ -100,6 +107,39 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public void logout() {
         Long userId = CurrentUser.getUserId();
         increaseTokenVersion(userId);
+        clearRefreshToken(userId);
+    }
+
+    @Override
+    public LoginVo refreshToken(String refreshToken) {
+        if (!StringUtils.hasText(refreshToken)) {
+            throw new BizException(400, "refreshToken不能为空");
+        }
+
+        String refreshTokenHash = hashRefreshToken(refreshToken);
+        QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("refresh_token", refreshTokenHash)
+                .gt("refresh_expire_at", OffsetDateTime.now());
+
+        SysUser sysUser = getOne(wrapper, false);
+        if (sysUser == null) {
+            throw new BizException(401, "请重新登录");
+        }
+        if (!sysUser.getStatus()) {
+            throw new BizException(403, "当前用户已被禁用，请联系管理员");
+        }
+
+        // access token 版本递增（使旧 access token 失效）
+        increaseTokenVersion(sysUser.getId());
+        sysUser.setTokenVersion(sysUser.getTokenVersion() + 1);
+
+        String newRefreshToken = rotateRefreshToken(sysUser.getId());
+
+        String token = jwtUtils.generateToken(sysUser);
+        LoginVo res = new LoginVo();
+        res.setToken(token);
+        res.setRefreshToken(newRefreshToken);
+        return res;
     }
 
     @Override
@@ -123,8 +163,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 3️⃣ 生成 token
         String token = jwtUtils.generateToken(sysUser);
 
+        String refreshToken = rotateRefreshToken(sysUser.getId());
+
         LoginVo res = new LoginVo();
         res.setToken(token);
+        res.setRefreshToken(refreshToken);
         return res;
     }
 
@@ -336,6 +379,48 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         .eq("id", userId)
                         .setSql("token_version = token_version + 1")
         );
+    }
+
+    private String rotateRefreshToken(Long userId) {
+        String refreshToken = generateRefreshToken();
+        String refreshTokenHash = hashRefreshToken(refreshToken);
+        OffsetDateTime refreshExpireAt = OffsetDateTime.now()
+                .plus(Duration.ofMillis(jwtProperties.getRefreshExpireMillis()));
+
+        baseMapper.update(
+                null,
+                new UpdateWrapper<SysUser>()
+                        .eq("id", userId)
+                        .set("refresh_token", refreshTokenHash)
+                        .set("refresh_expire_at", refreshExpireAt)
+        );
+
+        return refreshToken;
+    }
+
+    private void clearRefreshToken(Long userId) {
+        baseMapper.update(
+                null,
+                new UpdateWrapper<SysUser>()
+                        .eq("id", userId)
+                        .set("refresh_token", null)
+                        .set("refresh_expire_at", null)
+        );
+    }
+
+    private String generateRefreshToken() {
+        return UUID.randomUUID().toString().replace("-", "")
+                + UUID.randomUUID().toString().replace("-", "");
+    }
+
+    private String hashRefreshToken(String refreshToken) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashed = digest.digest(refreshToken.getBytes());
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hashed);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 not available", e);
+        }
     }
 
     /**

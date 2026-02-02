@@ -2,6 +2,7 @@ package com.xusheng94.leyu.generator;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class CodeGenerator {
         String moduleName = "leyu-admin";
 
         // 要生成代码的表
-        String tableName = "test_table";
+        String tableName = "sys__user";
 
         LoadYaml.setBusinessModule(moduleName);
 
@@ -43,6 +45,25 @@ public class CodeGenerator {
 
 
         FastAutoGenerator.create(url, username, password)
+            .dataSourceConfig(builder -> builder
+                        .typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
+                            int typeCode = metaInfo.getJdbcType().TYPE_CODE;
+                            if (typeCode == Types.TIMESTAMP || typeCode == Types.TIMESTAMP_WITH_TIMEZONE) {
+                                return new IColumnType() {
+                                    @Override
+                                    public String getType() {
+                                        return "OffsetDateTime";
+                                    }
+
+                                    @Override
+                                    public String getPkg() {
+                                        return "java.time.OffsetDateTime";
+                                    }
+                                };
+                            }
+                            return typeRegistry.getColumnType(metaInfo);
+                        })
+            )
                 .globalConfig(builder -> builder
                         .author("xusheng")
                         .outputDir(outputDir)
@@ -75,6 +96,7 @@ public class CodeGenerator {
                     customMap.put("parentPackage", parentPackage);
                     customMap.put("autoIdTables", GeneratorConfig.autoIdTables);
                     customMap.put("readOnlyFields", GeneratorConfig.readOnlyFields);
+                    customMap.put("jsonIgnoreFields", GeneratorConfig.jsonIgnoreFields);
                     customMap.put("ignoreFields", GeneratorConfig.ignoreFields);
                     customMap.put("queryConfig", GeneratorConfig.queryConfig);
 

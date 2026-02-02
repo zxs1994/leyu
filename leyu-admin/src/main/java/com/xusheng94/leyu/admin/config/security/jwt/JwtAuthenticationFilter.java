@@ -22,6 +22,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    public static final String AUTH_EXPIRED_ATTR = "AUTH_EXPIRED";
+
     private final JwtUtils jwtUtils;
 
     private final SysUserMapper sysUserMapper;
@@ -49,6 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
 
+        } else if (token != null && jwtUtils.isTokenExpired(token)) {
+            request.setAttribute(AUTH_EXPIRED_ATTR, true);
         }
 
 
