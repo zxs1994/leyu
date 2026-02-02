@@ -14,8 +14,9 @@ fi
 
 echo "✅ Found JAR: $APP_NAME"
 
-# 查找正在运行的进程（匹配 leyu-admin 的任何版本）
-pids=$(ps -ef | grep "leyu-admin.*jar" | grep -v grep | awk '{print $2}')
+# 查找正在运行的进程（匹配当前目录下任意 jar）
+CURRENT_DIR=$(pwd)
+pids=$(ps -ef | grep "java" | grep "$CURRENT_DIR/.*\.jar" | grep -v grep | awk '{print $2}')
 
 if [ -n "$pids" ]; then
   echo "🛑 Stopping old process..."
