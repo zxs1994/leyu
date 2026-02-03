@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.admin.config;
+package com.xusheng94.leyu.common.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +13,6 @@ public class ProjectProperties {
     private String name;
     private String description;
     private String basePackage;
+    private String moduleName;
     private String version;
 }

@@ -1,6 +1,6 @@
 package com.xusheng94.leyu.admin.config.swagger;
 
-import com.xusheng94.leyu.admin.config.ProjectProperties;
+import com.xusheng94.leyu.common.config.ProjectProperties;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
@@ -12,7 +12,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.xusheng94.leyu.common.config.SwaggerCustomizerProvider;
+import com.xusheng94.leyu.common.config.swagger.SwaggerCustomizerProvider;
 
 
 @Configuration

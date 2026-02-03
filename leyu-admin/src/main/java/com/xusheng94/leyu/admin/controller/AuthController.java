@@ -27,8 +27,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
-    public LoginVo login(@RequestBody LoginDto req) {
-        return sysUserService.login(req);
+    public LoginVo login(@RequestBody LoginDto dto) {
+        return sysUserService.login(dto);
     }
 
     @PostMapping("/logout")
@@ -39,8 +39,8 @@ public class AuthController {
 
     @PostMapping("/refresh")
     @Operation(summary = "刷新 token")
-    public LoginVo refresh(@RequestBody RefreshTokenDto req) {
-        return sysUserService.refreshToken(req.getRefreshToken());
+    public LoginVo refresh(@RequestBody RefreshTokenDto dto) {
+        return sysUserService.refreshToken(dto.getRefreshToken());
     }
 
 }

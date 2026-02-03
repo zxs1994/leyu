@@ -20,13 +20,11 @@ security:
         - /v3/api-docs/**
         - /favicon.ico
         - /common/**
-        - /auth/login
-        - /auth/refresh
+        - /auth/**
     login-only-urls:
         - /sys/user/info
         - /sys/profile
         - /sys/password
-        - /auth/**
         - /auth/logout
     platform-only-urls:
         - /platform/**

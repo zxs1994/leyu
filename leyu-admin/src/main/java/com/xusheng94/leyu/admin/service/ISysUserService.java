@@ -18,15 +18,15 @@ import com.xusheng94.leyu.admin.model.vo.SysUserVo;
  * @since 2026-01-10 01:41:52
  */
 public interface ISysUserService extends IService<SysUser> {
-    LoginVo login(LoginDto req);
+    LoginVo login(LoginDto dto);
 
     LoginVo refreshToken(String refreshToken);
 
     void logout();
 
-    Long save(SysUserDto sysUser);
+    Long save(SysUserDto dto);
 
-    boolean updateById(SysUserDto sysUserDto);
+    boolean updateById(SysUserDto dto);
 
     Page<SysUserVo> page(SysUserQuery query);
 

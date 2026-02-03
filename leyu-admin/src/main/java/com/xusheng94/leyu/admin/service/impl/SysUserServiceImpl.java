@@ -136,18 +136,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String newRefreshToken = rotateRefreshToken(sysUser.getId());
 
         String token = jwtUtils.generateToken(sysUser);
-        LoginVo res = new LoginVo();
-        res.setToken(token);
-        res.setRefreshToken(newRefreshToken);
-        return res;
+        LoginVo vo = new LoginVo();
+        vo.setToken(token);
+        vo.setRefreshToken(newRefreshToken);
+        return vo;
     }
 
     @Override
-    public LoginVo login(LoginDto req) {
+    public LoginVo login(LoginDto dto) {
         QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("email", req.getEmail());
+        wrapper.eq("email", dto.getEmail());
         SysUser sysUser = getOne(wrapper, false);
-        if (sysUser == null || !passwordEncoder.matches(req.getPassword(), sysUser.getPassword())) {
+        if (sysUser == null || !passwordEncoder.matches(dto.getPassword(), sysUser.getPassword())) {
             // 登录失败，抛业务异常
             throw new BizException(400, "邮箱或密码错误");
         }
@@ -165,10 +165,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         String refreshToken = rotateRefreshToken(sysUser.getId());
 
-        LoginVo res = new LoginVo();
-        res.setToken(token);
-        res.setRefreshToken(refreshToken);
-        return res;
+        LoginVo vo = new LoginVo();
+        vo.setToken(token);
+        vo.setRefreshToken(refreshToken);
+        return vo;
     }
 
     @Transactional

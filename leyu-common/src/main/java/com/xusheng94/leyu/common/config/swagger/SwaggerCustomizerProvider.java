@@ -1,4 +1,4 @@
-package com.xusheng94.leyu.common.config;
+package com.xusheng94.leyu.common.config.swagger;
 
 import com.xusheng94.leyu.common.NoApiWrap;
 import com.xusheng94.leyu.common.config.IAuthLevelResolver;

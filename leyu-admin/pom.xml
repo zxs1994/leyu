@@ -140,6 +140,7 @@ project:
     description: ${project.description}
     parent-package: ${project.parent.groupId}.${project.parent.artifactId}
     base-package: ${project.parent.groupId}.${project.parent.artifactId}.admin
+    module-name: ${project.artifactId}
     version: ${project.version}
                                 </echo>
                             </target>

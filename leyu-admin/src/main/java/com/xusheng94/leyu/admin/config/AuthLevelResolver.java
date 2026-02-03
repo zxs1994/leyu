@@ -14,12 +14,15 @@ public class AuthLevelResolver implements IAuthLevelResolver {
     private final SecurityProperties securityProperties;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
+    /**
+     * 顺序很重要：更严格的规则必须优先匹配，避免被宽松规则覆盖
+     */
     public AuthLevel resolve(String path) {
 
-        // 白名单
-        for (String p : securityProperties.getWhitelistUrls()) {
+        // 仅平台
+        for (String p : securityProperties.getPlatformOnlyUrls()) {
             if (antPathMatcher.match(p, path)) {
-                return AuthLevel.WHITELIST;
+                return AuthLevel.PLATFORM_ONLY;
             }
         }
 
@@ -30,10 +33,10 @@ public class AuthLevelResolver implements IAuthLevelResolver {
             }
         }
 
-        // 仅平台
-        for (String p : securityProperties.getPlatformOnlyUrls()) {
+        // 白名单
+        for (String p : securityProperties.getWhitelistUrls()) {
             if (antPathMatcher.match(p, path)) {
-                return AuthLevel.PLATFORM_ONLY;
+                return AuthLevel.WHITELIST;
             }
         }
 

@@ -1,6 +1,7 @@
 # Swagger 配置
 springdoc:
     swagger-ui:
+
         # 是否启用 Swagger UI（一般只在 dev / test 环境开启）
         enabled: true
 
@@ -28,3 +29,4 @@ springdoc:
         # true  : 使用系统管理 / 业务接口等分组
         # false : 所有接口放在一个文档中
         group-enabled: false
+        
