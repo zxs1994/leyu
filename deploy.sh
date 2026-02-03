@@ -14,9 +14,9 @@ fi
 
 echo "✅ Found JAR: $APP_NAME"
 
-# 查找正在运行的进程（匹配当前目录下任意 jar）
-CURRENT_DIR=$(pwd)
-pids=$(ps -ef | grep "java" | grep "$CURRENT_DIR/.*\.jar" | grep -v grep | awk '{print $2}')
+# 查找正在运行的进程（按 jar 名称前缀匹配，忽略版本号）
+APP_PREFIX=$(echo "$APP_NAME" | sed -E 's/-[0-9]+(\.[0-9]+)*.*\.jar$//')
+pids=$(pgrep -f "java .*${APP_PREFIX}.*\.jar")
 
 if [ -n "$pids" ]; then
   echo "🛑 Stopping old process..."
