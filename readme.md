@@ -21,11 +21,11 @@
 
 ### UI 界面
 访问主站：  
-[http://le yu](http://leyu.xu sheng)
+[http://leyu.xusheng94.com](http://leyu.xusheng94.com)
 
 ### API 文档 (Swagger)
 访问 Swagger UI：  
-[http://leyu.xusheng94.co m/swagger-ui/index.html](http://leyu.xusheng94.com/swagger-ui/index.html)
+[http://leyu.xusheng94.com/swagger-ui/index.html](http://leyu.xusheng94.com/swagger-ui/index.html)
 
 ---
 
