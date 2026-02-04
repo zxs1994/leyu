@@ -4,6 +4,7 @@ import com.xusheng94.leyu.common.BizException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -47,6 +48,16 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
         }
 
         if (body instanceof ApiResponse) {
+            return body;
+        }
+
+        // 下载/二进制响应：避免被 ApiResponse 包装导致类型转换错误
+        if (body instanceof byte[] || body instanceof Resource) {
+            return body;
+        }
+
+        // 兜底：按响应头判断为二进制时直接放行
+        if (contentType != null && MediaType.APPLICATION_OCTET_STREAM.includes(contentType)) {
             return body;
         }
 

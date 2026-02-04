@@ -105,6 +105,7 @@ public class SwaggerCustomizerProvider {
 
         return wrapper;
     }
+
     private Map<String, Object> buildVoidExample() {
         Map<String, Object> example = new LinkedHashMap<>();
         example.put("success", true);
