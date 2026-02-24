@@ -5,14 +5,18 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.xusheng94.leyu.common.config.swagger.SwaggerCustomizerProvider;
+
+import java.util.List;
 
 
 @Configuration
@@ -27,7 +31,8 @@ public class OpenApiConfig {
      * OpenAPI 全局配置 JWT 安全
      */
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI openAPI(@Value("${server.port}") String port,
+                           @Value("${spring.profiles.active}") String profile) {
 
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
@@ -36,23 +41,23 @@ public class OpenApiConfig {
                 .in(SecurityScheme.In.HEADER)
                 .name("Authorization");
 
+        String url;
+
+        if ("dev".equals(profile)) {
+            url = "http://localhost:" + port;
+        } else  {
+            url = "/api";
+        }
+
         return new OpenAPI()
                 .info(new Info()
                         .title(projectProperties.getName())
                         .version(projectProperties.getVersion())
                         .description(projectProperties.getDescription())
                 )
-//                .servers(List.of(
-//                        new Server()
-//                                .url("http://localhost:8088")
-//                                .description("本地开发"),
-//                        new Server()
-//                                .url("https://test.api.xxx.com")
-//                                .description("测试环境"),
-//                        new Server()
-//                                .url("https://api.xxx.com")
-//                                .description("生产环境")
-//                ))
+                .servers(List.of(
+                        new Server().url(url).description(profile + "环境")
+                ))
                 .components(new Components().addSecuritySchemes("jwt", securityScheme));
     }
     @Bean
