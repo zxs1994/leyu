@@ -31,21 +31,20 @@ public class CodeGenerator {
         String parentPackage = LoadYaml.getParentPackage();
         String basePackage = LoadYaml.getBasePackage();
 
-//        System.out.println("url: " + url);
-//        System.out.println("username: " + username);
-//        System.out.println("password: " + password);
+        // System.out.println("url: " + url);
+        // System.out.println("username: " + username);
+        // System.out.println("password: " + password);
 
         // 多模块支持：自动定位项目根目录，输出代码到指定模块
         String parentDir = LoadYaml.findParentDirectory();
         String outputDir = parentDir + "/" + moduleName + "/src/main/java";
 
-       System.out.println("Parent 目录: " + parentDir);
-       System.out.println("输出目录: " + outputDir);
-       System.out.println("基础包名: " + basePackage);
-
+        System.out.println("Parent 目录: " + parentDir);
+        System.out.println("输出目录: " + outputDir);
+        System.out.println("基础包名: " + basePackage);
 
         FastAutoGenerator.create(url, username, password)
-            .dataSourceConfig(builder -> builder
+                .dataSourceConfig(builder -> builder
                         .typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
                             int typeCode = metaInfo.getJdbcType().TYPE_CODE;
                             if (typeCode == Types.TIMESTAMP || typeCode == Types.TIMESTAMP_WITH_TIMEZONE) {
@@ -61,31 +60,45 @@ public class CodeGenerator {
                                     }
                                 };
                             }
+                            // JSON 判断
+                            // 这里用 metaInfo.getColumnType() 返回数据库类型名字符串（比如 "json", "longtext" 等）
+                            String columnType = metaInfo.getTypeName().toLowerCase();
+                            if (columnType.contains("json")) {
+                                return new IColumnType() {
+                                    @Override
+                                    public String getType() {
+                                        return "Map<String,Object>";
+                                    }
+
+                                    @Override
+                                    public String getPkg() {
+                                        return "java.util.Map";
+                                    }
+                                };
+                            }
                             return typeRegistry.getColumnType(metaInfo);
-                        })
-            )
+                        }))
                 .globalConfig(builder -> builder
                         .author("xusheng")
                         .outputDir(outputDir)
                         .commentDate("yyyy-MM-dd HH:mm:ss")
                         .disableOpenDir() // 禁止自动打开输出目录
                 )
-                .packageConfig(builder ->
-                    builder.parent(basePackage) // 父包名
-//                            .entity("entity")
-//                            .mapper("mapper")
-//                            .service("service")
-//                            .controller("controller")
-//                            .serviceImpl("service.impl")
-//                            .xml("mapper.xml")
+                .packageConfig(builder -> builder.parent(basePackage) // 父包名
+                // .entity("entity")
+                // .mapper("mapper")
+                // .service("service")
+                // .controller("controller")
+                // .serviceImpl("service.impl")
+                // .xml("mapper.xml")
                 )
                 .strategyConfig(builder -> builder
                         .addInclude(tableName)
 
                         .entityBuilder()
-                            .enableTableFieldAnnotation() // ✅ 强烈推荐
-                            .logicDeleteColumnName("deleted")
-                            .enableFileOverride() // 覆盖生成的文件
+                        .enableTableFieldAnnotation() // ✅ 强烈推荐
+                        .logicDeleteColumnName("deleted")
+                        .enableFileOverride() // 覆盖生成的文件
 
                 )
                 .templateEngine(new FreemarkerTemplateEngine())
@@ -118,7 +131,7 @@ public class CodeGenerator {
                             .fileName("Query.java")
                             .templatePath("templates/query.java.ftl")
                             .packageName("model.query")
-//                            .enableFileOverride() // 覆盖生成的文件
+                            // .enableFileOverride() // 覆盖生成的文件
                             .build());
                 })
                 .execute();
@@ -129,20 +142,19 @@ public class CodeGenerator {
 
     /**
      * 由于生成器不能按条件生成，所以使用生成后再删除的方法
-     * @param outputDir 文件夹
+     * 
+     * @param outputDir   文件夹
      * @param basePackage 基础包
      * @throws IOException IO异常
      */
     private static void deleteNoControllerFiles(
             String outputDir,
-            String basePackage
-    ) throws IOException {
+            String basePackage) throws IOException {
 
         String controllerPath = outputDir + "/" + basePackage.replace(".", "/") + "/controller";
         String dtoPath = outputDir + "/" + basePackage.replace(".", "/") + "/model/dto";
         String voPath = outputDir + "/" + basePackage.replace(".", "/") + "/model/vo";
         String queryPath = outputDir + "/" + basePackage.replace(".", "/") + "/model/query";
-
 
         for (String table : GeneratorConfig.noControllerTables) {
             String entityName = NamingStrategy.capitalFirst(NamingStrategy.underlineToCamel(table));
@@ -178,5 +190,3 @@ public class CodeGenerator {
     }
 
 }
-
-

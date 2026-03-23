@@ -18,7 +18,6 @@
 package ${package.Controller};
 
 import ${parentPackage}.common.BizException;
-import ${package.Entity}.${entity};
 import ${package.Service}.I${entity}Service;
 import ${package.Query}.${entity}Query;
 import ${package.Dto}.${entity}Dto;
