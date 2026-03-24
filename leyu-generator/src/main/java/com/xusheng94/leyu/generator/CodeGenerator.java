@@ -67,12 +67,13 @@ public class CodeGenerator {
                                 return new IColumnType() {
                                     @Override
                                     public String getType() {
-                                        return "Map<String,Object>";
+                                        // 用List可以保证顺序
+                                        return "List<Map<String,Object>>";
                                     }
 
                                     @Override
                                     public String getPkg() {
-                                        return "java.util.Map";
+                                        return "java.util.List";
                                     }
                                 };
                             }

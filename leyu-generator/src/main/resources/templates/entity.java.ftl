@@ -11,22 +11,23 @@ import ${parentPackage}.common.BaseEntity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 <#assign hasOffsetDateTime = false>
-<#assign hasMap = false>
+<#assign hasJsonField = false>
 <#list table.fields as field>
     <#if !ignoreFields?seq_contains(field.name)>
         <#if field.propertyType == "OffsetDateTime">
             <#assign hasOffsetDateTime = true>
         </#if>
-        <#if field.propertyType == "Map<String,Object>">
-            <#assign hasMap = true>
+        <#if field.propertyType == "Map<String,Object>" || field.propertyType == "List<Map<String,Object>>">
+            <#assign hasJsonField = true>
         </#if>
     </#if>
 </#list>
 <#if hasOffsetDateTime>
 import java.time.OffsetDateTime;
 </#if>
-<#if hasMap>
+<#if hasJsonField>
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import java.util.List;
 import java.util.Map;
 </#if>
 
@@ -41,7 +42,7 @@ import java.util.Map;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName(<#if hasMap>value = "${table.name}", autoResultMap = true<#else>"${table.name}"</#if>)
+@TableName(<#if hasJsonField>value = "${table.name}", autoResultMap = true<#else>"${table.name}"</#if>)
 @Schema(description = "${table.comment}")
 public class ${entity} extends BaseEntity {
 
@@ -75,7 +76,7 @@ public class ${entity} extends BaseEntity {
     @Schema(description = "${field.comment}")
     </#if>
     <#-- 自动填充 -->
-    <#if field.propertyType == "Map<String,Object>">
+    <#if field.propertyType == "Map<String,Object>" || field.propertyType == "List<Map<String,Object>>">
     <#if field.fill??>
     @TableField(fill = FieldFill.${field.fill}, typeHandler = JacksonTypeHandler.class)
     <#elseif field.name != field.columnName>
