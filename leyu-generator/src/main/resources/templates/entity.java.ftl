@@ -12,10 +12,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 <#assign hasOffsetDateTime = false>
 <#assign hasJsonField = false>
+<#assign hasBigDecimalField = false>
 <#list table.fields as field>
     <#if !ignoreFields?seq_contains(field.name)>
         <#if field.propertyType == "OffsetDateTime">
             <#assign hasOffsetDateTime = true>
+        </#if>
+        <#if field.propertyType == "BigDecimal">
+            <#assign hasBigDecimalField = true>
         </#if>
         <#if field.propertyType == "Map<String,Object>" || field.propertyType == "List<Map<String,Object>>">
             <#assign hasJsonField = true>
@@ -27,8 +31,12 @@ import java.time.OffsetDateTime;
 </#if>
 <#if hasJsonField>
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+
 import java.util.List;
 import java.util.Map;
+</#if>
+<#if hasBigDecimalField>
+import java.math.BigDecimal;
 </#if>
 
 /**
