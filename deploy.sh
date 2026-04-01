@@ -33,7 +33,7 @@ ENV=${1:-prod}
 
 echo "🚀 Starting new process in environment: $ENV"
 
-sudo nohup java -jar "$APP_NAME" \
+sudo nohup java -Duser.timezone=UTC -jar "$APP_NAME" \
   --spring.profiles.active="$ENV" \
   > /dev/null 2>&1 &
 
