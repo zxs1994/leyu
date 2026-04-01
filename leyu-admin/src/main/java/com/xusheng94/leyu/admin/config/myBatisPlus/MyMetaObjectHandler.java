@@ -7,6 +7,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Slf4j
 @Component
@@ -14,7 +15,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         // 无论是否传值，都覆盖
         this.setFieldValByName("createdAt", now, metaObject);
         this.setFieldValByName("updatedAt", now, metaObject);
@@ -24,14 +25,13 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
             log.warn(
                     "Insert entity with preset ID detected, id={}, class={}",
                     metaObject.getValue("id"),
-                    metaObject.getOriginalObject().getClass().getSimpleName()
-            );
+                    metaObject.getOriginalObject().getClass().getSimpleName());
         }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         // 无论是否传值，都覆盖
         this.setFieldValByName("updatedAt", now, metaObject);
     }

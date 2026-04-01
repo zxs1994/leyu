@@ -35,8 +35,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
-import java.util.Base64;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -119,7 +119,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String refreshTokenHash = hashRefreshToken(refreshToken);
         QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
         wrapper.eq("refresh_token", refreshTokenHash)
-                .gt("refresh_expire_at", OffsetDateTime.now());
+                .gt("refresh_expire_at", OffsetDateTime.now(ZoneOffset.UTC));
 
         SysUser sysUser = getOne(wrapper, false);
         if (sysUser == null) {
@@ -220,8 +220,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             // 2️⃣ 删除旧角色关联
             sysUserRoleService.remove(
                     new LambdaQueryWrapper<SysUserRole>()
-                            .eq(SysUserRole::getUserId, userId)
-            );
+                            .eq(SysUserRole::getUserId, userId));
 
             // 3️⃣ 新增新角色关联
             List<Long> roleIds = dto.getRoleIds();
@@ -243,7 +242,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         // 用户创建的用户不能改系统创建的用户
-        if (oldUser.getSource().equals(SourceType.SYSTEM.getCode()) ) {
+        if (oldUser.getSource().equals(SourceType.SYSTEM.getCode())) {
             if (!CurrentUser.isSystemUser()) {
                 throw new BizException(403, "无权修改!");
             }
@@ -275,7 +274,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public Page<SysUserVo> page(SysUserQuery query){
+    public Page<SysUserVo> page(SysUserQuery query) {
 
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
         qw.orderByAsc("sort");
@@ -324,8 +323,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             vo.setRoleIds(
                     vo.getRoles().stream()
                             .map(SysRole::getId)
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
 
             SysDept dept = deptMap.get(vo.getDeptId());
             if (dept != null) {
@@ -342,7 +340,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         return voPage;
     }
-
 
     private void validateEmail(String email) {
         if (email == null || email.isBlank()) {
@@ -377,14 +374,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 null,
                 new UpdateWrapper<SysUser>()
                         .eq("id", userId)
-                        .setSql("token_version = token_version + 1")
-        );
+                        .setSql("token_version = token_version + 1"));
     }
 
     private String rotateRefreshToken(Long userId) {
         String refreshToken = generateRefreshToken();
         String refreshTokenHash = hashRefreshToken(refreshToken);
-        OffsetDateTime refreshExpireAt = OffsetDateTime.now()
+        OffsetDateTime refreshExpireAt = OffsetDateTime.now(
+                ZoneOffset.UTC)
                 .plus(Duration.ofMillis(jwtProperties.getRefreshExpireMillis()));
 
         baseMapper.update(
@@ -392,8 +389,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 new UpdateWrapper<SysUser>()
                         .eq("id", userId)
                         .set("refresh_token", refreshTokenHash)
-                        .set("refresh_expire_at", refreshExpireAt)
-        );
+                        .set("refresh_expire_at", refreshExpireAt));
 
         return refreshToken;
     }
@@ -404,8 +400,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 new UpdateWrapper<SysUser>()
                         .eq("id", userId)
                         .set("refresh_token", null)
-                        .set("refresh_expire_at", null)
-        );
+                        .set("refresh_expire_at", null));
     }
 
     private String generateRefreshToken() {
@@ -426,7 +421,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     /**
      * 给用户批量更新角色关联
      *
-     * @param userId 用户ID
+     * @param userId  用户ID
      * @param roleIds 角色ID列表
      */
     private void saveUserRoles(Long userId, List<Long> roleIds) {
