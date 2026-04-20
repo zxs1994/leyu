@@ -13,18 +13,18 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 /**
  * <p>
- * 系统--角色表 实体
+ * 数据权限测试表 实体
  * </p>
  *
  * @author xusheng
- * @since 2026-04-17 17:13:47
+ * @since 2026-04-17 19:48:46
  */
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys__role")
-@Schema(description = "系统--角色表")
-public class SysRole extends BaseEntity {
+@TableName("data_scope_test")
+@Schema(description = "数据权限测试表")
+public class DataScopeTest extends BaseEntity {
 
     @TableId(type = IdType.ASSIGN_ID)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -37,14 +37,8 @@ public class SysRole extends BaseEntity {
     @Schema(description = "租户 / 公司ID（SaaS隔离）", example = "8088")
     private Long tenantId;
 
-    @Schema(description = "角色名")
+    @Schema(description = "名称")
     private String name;
-
-    @Schema(description = "角色编码")
-    private String code;
-
-    @Schema(description = "数据权限范围：DataScopeType枚举")
-    private String dataScope;
 
     @TableLogic
     @JsonIgnore
@@ -52,7 +46,15 @@ public class SysRole extends BaseEntity {
     private Boolean deleted;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "数据来源：SYSTEM=系统内置，USER=用户创建")
-    private String source;
+    @TableField(fill = FieldFill.INSERT)
+    @JsonSerialize(using = ToStringSerializer.class)
+    @Schema(description = "部门ID", example = "8088")
+    private Long deptId;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @TableField(fill = FieldFill.INSERT)
+    @JsonSerialize(using = ToStringSerializer.class)
+    @Schema(description = "创建者ID", example = "8088")
+    private Long creatorId;
 
 }

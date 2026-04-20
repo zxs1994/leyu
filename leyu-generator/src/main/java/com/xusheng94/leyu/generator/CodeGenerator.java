@@ -21,7 +21,7 @@ public class CodeGenerator {
         String moduleName = "leyu-admin";
 
         // 要生成代码的表
-        String tableName = "sys__user";
+        String tableName = "data_scope_test";
 
         LoadYaml.setBusinessModule(moduleName);
 
@@ -113,6 +113,7 @@ public class CodeGenerator {
                     customMap.put("jsonIgnoreFields", GeneratorConfig.jsonIgnoreFields);
                     customMap.put("ignoreFields", GeneratorConfig.ignoreFields);
                     customMap.put("queryConfig", GeneratorConfig.queryConfig);
+                    customMap.put("fieldFillInsert", GeneratorConfig.fieldFillInsert);
 
                     injectConfig.customMap(customMap);
 

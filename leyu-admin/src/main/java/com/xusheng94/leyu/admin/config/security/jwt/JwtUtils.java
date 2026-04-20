@@ -34,11 +34,12 @@ public class JwtUtils {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(sysUser.getEmail())
-                .claim("id", sysUser.getId())             // 用户 ID
-                .claim("tenantId", sysUser.getTenantId())     // ⭐ 租户ID
+                .claim("id", sysUser.getId()) // 用户 ID
+                .claim("deptId", sysUser.getDeptId())
+                .claim("tenantId", sysUser.getTenantId()) // ⭐ 租户ID
                 .claim("tokenVersion", sysUser.getTokenVersion())
                 .claim("source", sysUser.getSource())
-                .setIssuedAt(new Date(now))      // 签发时间
+                .setIssuedAt(new Date(now)) // 签发时间
                 .setExpiration(new Date(now + jwtProperties.getExpireMillis())) // 过期时间
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -63,6 +64,13 @@ public class JwtUtils {
      */
     public Long getTenantIdFromToken(String token) {
         return parseToken(token).getBody().get("tenantId", Long.class);
+    }
+
+    /**
+     * 获取部门 ID
+     */
+    public Long getDeptIdFromToken(String token) {
+        return parseToken(token).getBody().get("deptId", Long.class);
     }
 
     /**
@@ -132,17 +140,16 @@ public class JwtUtils {
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         LoginUser loginUser = new LoginUser(
                 getSysUserIdFromToken(token),
+                getDeptIdFromToken(token),
                 getTenantIdFromToken(token),
                 getSubjectFromToken(token),
                 getSourceFromToken(token),
-                getTokenVersion(token)
-        );
+                getTokenVersion(token));
 
         return new UsernamePasswordAuthenticationToken(
                 loginUser,
                 null,
-                Collections.emptyList()
-        );
+                Collections.emptyList());
     }
 
 }

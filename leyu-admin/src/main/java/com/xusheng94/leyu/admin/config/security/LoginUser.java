@@ -8,6 +8,7 @@ import lombok.Getter;
 public class LoginUser {
 
     private Long userId;
+    private Long deptId;
     private Long tenantId;
     private String email;
     private String source;

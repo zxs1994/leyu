@@ -255,7 +255,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
         }
 
-        // TODO 允许修改邮箱的问题，目前前端是禁用修改邮箱
         // 1️⃣ 校验 email
         if (email != null) {
             validateEmail(sysUser.getEmail());
@@ -269,6 +268,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         } else {
             sysUser.setPassword(null); // 保持原密码
         }
+
+        // 1️⃣ tokenVersion 自增（数据库）
+        increaseTokenVersion(sysUser.getId());
 
         return super.updateById(sysUser);
     }

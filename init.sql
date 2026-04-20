@@ -56,7 +56,8 @@ CREATE TABLE `sys__role` (
   `id` BIGINT NOT NULL COMMENT '主键',
   `tenant_id` BIGINT DEFAULT NULL COMMENT '租户 / 公司ID（SaaS隔离）',
   `name` VARCHAR(50) NOT NULL COMMENT '角色名',
-  `code` VARCHAR(50) NOT NULL COMMENT '角色编码',
+  `code` VARCHAR(50) COMMENT '角色编码',
+  `data_scope` VARCHAR(50) NOT NULL DEFAULT 'ALL' COMMENT '数据权限范围：DataScopeType枚举',
   `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   `source` VARCHAR(20) NOT NULL DEFAULT 'USER' COMMENT '数据来源：SYSTEM=系统内置，USER=用户创建',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -155,3 +156,22 @@ INSERT INTO `sys__permission` (`parent_id`, `name`, `code`, `method`, `path`, `m
 INSERT INTO `sys__user_role` (`user_id`, `role_id`, `source`) VALUES (1, 1, 'SYSTEM'), (2, 1, 'SYSTEM'), (3, 1, 'SYSTEM');
 INSERT INTO `sys__role_permission` (`role_id`, `permission_id`, `source`) VALUES (1, 1, 'SYSTEM'), (2, 2, 'SYSTEM');
 
+
+-- ----------------------------
+-- Table structure for data_scope_test 用来测试数据权限
+-- ----------------------------
+DROP TABLE IF EXISTS `data_scope_test`;
+CREATE TABLE `data_scope_test` (
+  `id` BIGINT NOT NULL COMMENT '主键',
+  `tenant_id` BIGINT DEFAULT NULL COMMENT '租户 / 公司ID（SaaS隔离）',
+  `name` VARCHAR(50) NOT NULL COMMENT '名称',
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除',
+  `dept_id` BIGINT COMMENT '部门ID',
+  `creator_id` BIGINT COMMENT '创建者ID',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY idx_tenant (tenant_id),
+  KEY idx_dept (dept_id),
+  KEY idx_creator (creator_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='数据权限测试表';

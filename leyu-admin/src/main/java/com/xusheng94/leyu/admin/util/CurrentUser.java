@@ -35,6 +35,11 @@ public class CurrentUser {
         return user != null ? user.getUserId() : null;
     }
 
+    public static Long getDeptId() {
+        LoginUser user = getLoginUser();
+        return user != null ? user.getDeptId() : null;
+    }
+
     public static boolean isPlatformUser() {
         LoginUser user = getLoginUser();
         return user != null && user.isPlatformUser();

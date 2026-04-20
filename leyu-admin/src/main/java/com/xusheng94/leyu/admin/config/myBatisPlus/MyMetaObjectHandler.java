@@ -1,6 +1,7 @@
 package com.xusheng94.leyu.admin.config.myBatisPlus;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.xusheng94.leyu.admin.util.CurrentUser;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -20,6 +21,8 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createdAt", now, metaObject);
         this.setFieldValByName("updatedAt", now, metaObject);
         this.setFieldValByName("deleted", false, metaObject);
+        fillIfPresent(metaObject, "creatorId", CurrentUser.getUserId());
+        fillIfPresent(metaObject, "deptId", CurrentUser.getDeptId());
 
         if (metaObject.hasGetter("id") && metaObject.getValue("id") != null) {
             log.warn(
@@ -34,5 +37,12 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         // 无论是否传值，都覆盖
         this.setFieldValByName("updatedAt", now, metaObject);
+    }
+
+    private void fillIfPresent(MetaObject metaObject, String fieldName, Object value) {
+        if (value == null || !metaObject.hasSetter(fieldName) || metaObject.getValue(fieldName) != null) {
+            return;
+        }
+        this.setFieldValByName(fieldName, value, metaObject);
     }
 }

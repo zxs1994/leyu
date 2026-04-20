@@ -68,9 +68,13 @@ public class ${entity} extends BaseEntity {
     <#if field.name == "password">
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     </#if>
-    <#-- source字段：只读 -->
-    <#if readOnlyFields?seq_contains(field.name)>
+    <#-- 只读字段：只读 -->
+    <#if readOnlyFields?seq_contains(field.name) && !(table.name == "sys__user" && field.name == "dept_id")>
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    </#if>
+    <#-- 自动填充字段 -->
+    <#if fieldFillInsert?seq_contains(field.name) && !(table.name == "sys__user" && field.name == "dept_id")>
+    @TableField(fill = FieldFill.INSERT)
     </#if>
     <#-- 逻辑删除 -->
     <#if field.logicDeleteField>

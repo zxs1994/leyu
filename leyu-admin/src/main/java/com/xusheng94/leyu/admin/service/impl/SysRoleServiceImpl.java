@@ -193,9 +193,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public Long save(SysRoleDto dto) {
 
-        if (dto.getCode() == null || dto.getCode().isEmpty()) {
-            dto.setCode("ROLE_" + System.currentTimeMillis());
-        }
+//        if (dto.getCode() == null || dto.getCode().isEmpty()) {
+//            dto.setCode("ROLE_" + System.currentTimeMillis());
+//        }
 
         SysRole sysRole = new SysRole();
 

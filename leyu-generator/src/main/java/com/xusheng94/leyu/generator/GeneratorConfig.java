@@ -27,7 +27,9 @@ public class GeneratorConfig {
     public static final Set<String> readOnlyFields = Set.of(
 	    "id",
 	    "source",
-	    "token_version"
+	    "token_version",
+		"dept_id",
+		"creator_id"
     );
 
     /**
@@ -46,6 +48,14 @@ public class GeneratorConfig {
 	    "created_at",
 	    "updated_at"
     );
+
+	/**
+	 * 自动填充字段
+	 */
+	public static final Set<String> fieldFillInsert = Set.of(
+		"creator_id",
+		"dept_id"
+	);
 
     /**
      * 查询字段配置（queryConfig）
