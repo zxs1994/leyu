@@ -105,6 +105,8 @@ public class SysUserController {
         SysUser sysUser = new SysUser();
         sysUser.setId(userId);
         sysUser.setName(userInfo.getName());
+        sysUser.setEmail(userInfo.getEmail());
+
         // 为了平台用户可以切换租户 不使用sysUserService.updateById
         int count = sysUserMapper.updateById(sysUser);
         if (count != 1) {

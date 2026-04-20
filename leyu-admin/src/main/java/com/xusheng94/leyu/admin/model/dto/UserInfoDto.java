@@ -9,4 +9,7 @@ public class UserInfoDto {
     @Schema(description = "用户名")
     private String name;
 
+    @Schema(description = "邮箱")
+    private String email;
+
 }
