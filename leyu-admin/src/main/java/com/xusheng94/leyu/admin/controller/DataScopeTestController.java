@@ -1,5 +1,6 @@
 package com.xusheng94.leyu.admin.controller;
 
+import com.xusheng94.leyu.admin.config.myBatisPlus.IgnoreDataPermission;
 import com.xusheng94.leyu.common.BizException;
 import com.xusheng94.leyu.admin.service.IDataScopeTestService;
 import com.xusheng94.leyu.admin.model.query.DataScopeTestQuery;
@@ -31,6 +32,7 @@ public class DataScopeTestController {
     private static final String TITLE = "数据权限测试";
     private final IDataScopeTestService dataScopeTestService;
 
+//    @IgnoreDataPermission  // 忽略数据权限
     @GetMapping("/page")
     @Operation(summary = TITLE + "列表(分页)")
     public Page<DataScopeTestVo> page(DataScopeTestQuery query) {

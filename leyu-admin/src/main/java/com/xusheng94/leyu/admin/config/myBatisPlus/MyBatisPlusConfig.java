@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class MyBatisPlusConfig {
 
     private final MyTenantHandler tenantHandler;
-    private final MyMultiDataPermissionHandler multiDataPermissionHandler;
+    private final MyDataPermissionHandler dataPermissionHandler;
 
     /**
      * MyBatis-Plus 拦截器
@@ -27,7 +27,7 @@ public class MyBatisPlusConfig {
         // 1️⃣ 多租户插件
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(tenantHandler));
         // 2️⃣ 数据权限插件
-        interceptor.addInnerInterceptor(new DataPermissionInterceptor(multiDataPermissionHandler));
+        interceptor.addInnerInterceptor(new DataPermissionInterceptor(dataPermissionHandler));
         // 3️⃣ 分页插件
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;

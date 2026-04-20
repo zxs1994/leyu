@@ -24,11 +24,11 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class MyMultiDataPermissionHandler implements MultiDataPermissionHandler {
+public class MyDataPermissionHandler implements MultiDataPermissionHandler {
 
     private static final String CREATOR_ID_COLUMN = "creator_id";
     private static final String DEPT_ID_COLUMN = "dept_id";
-    private static final String REQUEST_CACHE_PREFIX = MyMultiDataPermissionHandler.class.getName() + ".";
+    private static final String REQUEST_CACHE_PREFIX = MyDataPermissionHandler.class.getName() + ".";
 
     /**
      * 数据权限插件忽略的表
@@ -45,6 +45,10 @@ public class MyMultiDataPermissionHandler implements MultiDataPermissionHandler 
 
     @Override
     public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
+        if (Boolean.TRUE.equals(getRequestCache(IgnoreDataPermissionInterceptor.IGNORE_DATA_PERMISSION_ATTR))) {
+            return null;
+        }
+
         if (!CurrentUser.isLogin() || CurrentUser.isPlatformUser()) {
             return null;
         }
@@ -136,13 +140,13 @@ public class MyMultiDataPermissionHandler implements MultiDataPermissionHandler 
 
         List<String> scopes = jdbcTemplate.query(
                 """
-                    select distinct r.data_scope
-                    from sys__user_role ur
-                    join sys__role r on r.id = ur.role_id
-                    where ur.user_id = ?
-                      and (r.deleted = 0 or r.deleted is null)
-                      and r.data_scope is not null
-                    """,
+                        select distinct r.data_scope
+                        from sys__user_role ur
+                        join sys__role r on r.id = ur.role_id
+                        where ur.user_id = ?
+                          and (r.deleted = 0 or r.deleted is null)
+                          and r.data_scope is not null
+                        """,
                 (rs, rowNum) -> rs.getString("data_scope"),
                 userId);
 
