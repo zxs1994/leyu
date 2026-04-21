@@ -13,9 +13,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>leyu-admin</module>
-        <module>leyu-generator</module>
         <module>leyu-common</module>
+        <module>leyu-generator</module>
+        <module>leyu-admin</module>
     </modules>
 
     <properties>
