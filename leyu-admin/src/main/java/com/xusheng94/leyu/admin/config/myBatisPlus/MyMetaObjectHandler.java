@@ -21,8 +21,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createdAt", now, metaObject);
         this.setFieldValByName("updatedAt", now, metaObject);
         this.setFieldValByName("deleted", false, metaObject);
-        fillIfPresent(metaObject, "creatorId", CurrentUser.getUserId());
-        fillIfPresent(metaObject, "deptId", CurrentUser.getDeptId());
+        // 只有在没有传值的情况下才填充(当前字段为空才填, 当前字段已有值就不覆盖, 传入值是 null 也不会填)
+        // 这种策略允许在插入时手动指定 creatorId、deptId 等字段的值（例如通过代码设置或数据库默认值），同时在未指定时自动填充当前用户信息。
+        // 前端传值没有作用, 因为该字段上有@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        this.fillStrategy(metaObject, "creatorId", CurrentUser.getUserId());
+        this.fillStrategy(metaObject, "deptId", CurrentUser.getDeptId());
 
         if (metaObject.hasGetter("id") && metaObject.getValue("id") != null) {
             log.warn(
@@ -37,12 +40,5 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         // 无论是否传值，都覆盖
         this.setFieldValByName("updatedAt", now, metaObject);
-    }
-
-    private void fillIfPresent(MetaObject metaObject, String fieldName, Object value) {
-        if (value == null || !metaObject.hasSetter(fieldName) || metaObject.getValue(fieldName) != null) {
-            return;
-        }
-        this.setFieldValByName(fieldName, value, metaObject);
     }
 }

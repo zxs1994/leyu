@@ -56,6 +56,7 @@ public class ${entity} extends BaseEntity {
 
 <#list table.fields as field>
 <#if !ignoreFields?seq_contains(field.name)>
+    <#assign schemaAttrs = 'description = "${field.comment}"'>
     <#-- 主键 -->
     <#if field.keyFlag>
     @TableId(type = IdType.<#if autoIdTables?seq_contains(table.name)>AUTO<#else>ASSIGN_ID</#if>)
@@ -83,10 +84,9 @@ public class ${entity} extends BaseEntity {
     </#if>
     <#if field.keyFlag || field.name?ends_with("_id")>
     @JsonSerialize(using = ToStringSerializer.class)
-    @Schema(description = "${field.comment}", example = "8088")
-    <#else>
-    @Schema(description = "${field.comment}")
+        <#assign schemaAttrs = schemaAttrs + ', example = "8088"'>
     </#if>
+    @Schema(${schemaAttrs})
     <#-- 自动填充 -->
     <#if field.propertyType == "Map<String,Object>" || field.propertyType == "List<Map<String,Object>>">
     <#if field.fill??>
