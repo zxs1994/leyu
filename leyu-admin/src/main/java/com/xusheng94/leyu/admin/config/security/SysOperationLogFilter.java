@@ -161,11 +161,19 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 			return requestDataId;
 		}
 
-		if (responseJson != null && responseJson.has("data")) {
-			return resolveDataIdFromJson(responseJson.get("data"));
+		String responseDataId = resolveDataIdFromResponseData(responseJson);
+		if (StringUtils.hasText(responseDataId)) {
+			return responseDataId;
 		}
 
 		return null;
+	}
+
+	private String resolveDataIdFromResponseData(JsonNode responseJson) {
+		if (responseJson == null || !responseJson.has("data")) {
+			return null;
+		}
+		return resolveDataIdFromJson(responseJson.get("data"));
 	}
 
 	private String resolveDataIdFromPath(String path, SysPermission matchedPermission) {
@@ -195,13 +203,18 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 		if (jsonNode == null || jsonNode.isNull()) {
 			return null;
 		}
-		if (jsonNode.isValueNode()) {
-			String value = jsonNode.asText();
+		if (jsonNode.isIntegralNumber()) {
+			return jsonNode.bigIntegerValue().toString();
+		}
+		if (jsonNode.isFloatingPointNumber()) {
+			return jsonNode.decimalValue().toPlainString();
+		}
+		if (jsonNode.isTextual()) {
+			String value = jsonNode.textValue();
 			return StringUtils.hasText(value) ? value : null;
 		}
 		if (jsonNode.has("id") && !jsonNode.get("id").isNull()) {
-			String value = jsonNode.get("id").asText();
-			return StringUtils.hasText(value) ? value : null;
+			return resolveDataIdFromJson(jsonNode.get("id"));
 		}
 		return null;
 	}

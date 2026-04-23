@@ -34,7 +34,7 @@ public class PlatformTenantController {
     @PostMapping
     @Operation(summary = "新增租户")
     @Transactional
-    public Long add(@RequestBody TenantDto dto) {
+    public SysDept add(@RequestBody TenantDto dto) {
         return platformTenantService.addTenantWithAdmin(dto);
     }
 

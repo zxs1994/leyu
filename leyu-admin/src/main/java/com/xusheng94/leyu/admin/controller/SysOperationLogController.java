@@ -49,12 +49,12 @@ public class SysOperationLogController {
 
     // @PostMapping
     // @Operation(summary = "新增" + TITLE)
-    // public Long add(@RequestBody SysOperationLogDto dto) {
+    // public SysOperationLogDto add(@RequestBody SysOperationLogDto dto) {
     // boolean success = sysOperationLogService.save(dto);
     // if (!success) {
     // throw new BizException(400, "新增" + TITLE + "失败");
     // }
-    // return dto.getId();
+    // return dto;
     // }
     //
     // @PutMapping("/{id}")

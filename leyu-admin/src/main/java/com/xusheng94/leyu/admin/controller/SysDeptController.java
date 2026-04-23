@@ -48,12 +48,12 @@ public class SysDeptController {
 
     @PostMapping
     @Operation(summary = "新增组织部门")
-    public Long add(@RequestBody SysDept sysDept) {
+    public SysDept add(@RequestBody SysDept sysDept) {
         boolean success = sysDeptService.save(sysDept);
         if (!success) {
             throw new BizException(400, "新增组织部门失败");
         }
-        return sysDept.getId();
+        return sysDept;
     }
 
     @PutMapping("/{id}")

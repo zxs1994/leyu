@@ -49,12 +49,12 @@ public class TestDataScopeController {
 
     @PostMapping
     @Operation(summary = "新增" + TITLE)
-    public Long add(@RequestBody TestDataScopeDto dto) {
+    public TestDataScopeDto add(@RequestBody TestDataScopeDto dto) {
         boolean success = testDataScopeService.save(dto);
         if (!success) {
             throw new BizException(400, "新增" + TITLE + "失败");
         }
-        return dto.getId();
+        return dto;
     }
 
     @PutMapping("/{id}")
@@ -76,10 +76,10 @@ public class TestDataScopeController {
         }
     }
 
-//    @GetMapping
-//    @Operation(summary = TITLE + "列表")
-//    public List<TestDataScope> list() {
-//        return testDataScopeService.list();
-//    }
+    // @GetMapping
+    // @Operation(summary = TITLE + "列表")
+    // public List<TestDataScope> list() {
+    // return testDataScopeService.list();
+    // }
 
 }

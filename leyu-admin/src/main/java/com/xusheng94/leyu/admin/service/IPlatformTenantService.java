@@ -13,7 +13,7 @@ public interface IPlatformTenantService {
      * @param dto 租户信息和管理员信息
      * @return 新增租户ID
      */
-    Long addTenantWithAdmin(TenantDto dto);
+    SysDept addTenantWithAdmin(TenantDto dto);
 
     List<SysDept> list();
 

@@ -52,13 +52,13 @@ public class SysRoleController {
 
     @PostMapping
     @Operation(summary = "新增角色")
-    public Long add(@RequestBody SysRoleDto dto) {
+    public SysRoleDto add(@RequestBody SysRoleDto dto) {
 
         Long id = sysRoleService.save(dto);
         if (id == null) {
             throw new BizException(400, "新增角色失败");
         }
-        return id;
+        return dto;
     }
 
     @PutMapping("/{id}")

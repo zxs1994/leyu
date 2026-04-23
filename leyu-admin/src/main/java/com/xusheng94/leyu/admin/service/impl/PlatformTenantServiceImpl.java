@@ -34,7 +34,7 @@ public class PlatformTenantServiceImpl implements IPlatformTenantService {
 
     @Override
     @Transactional
-    public Long addTenantWithAdmin(TenantDto dto) {
+    public SysDept addTenantWithAdmin(TenantDto dto) {
 
         // 1️⃣ 生成雪花ID
         Long tenantId = IdWorker.getId();
@@ -59,7 +59,7 @@ public class PlatformTenantServiceImpl implements IPlatformTenantService {
         admin.setRoleIds(List.of(1L)); // 超级管理员
         sysUserService.save(admin);
 
-        return tenantId;
+        return tenant;
     }
 
     @Override

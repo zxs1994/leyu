@@ -53,12 +53,12 @@ public class SysUserController {
 
     @PostMapping
     @Operation(summary = "新增用户")
-    public Long add(@RequestBody SysUserDto sysUserDto) {
+    public SysUserDto add(@RequestBody SysUserDto sysUserDto) {
         Long id = sysUserService.save(sysUserDto);
         if (id == null) {
             throw new BizException(400, "新增用户失败");
         }
-        return id;
+        return sysUserDto;
     }
 
     @PutMapping("/{id}")

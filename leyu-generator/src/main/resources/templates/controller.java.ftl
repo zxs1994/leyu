@@ -66,12 +66,12 @@ public class ${entity}Controller {
 
     @PostMapping
     @Operation(summary = "新增" + TITLE)
-    public Long add(@RequestBody ${entity}Dto dto) {
+    public ${entity}Dto add(@RequestBody ${entity}Dto dto) {
         boolean success = ${entityLower}Service.save(dto);
         if (!success) {
             throw new BizException(400, "新增" + TITLE + "失败");
         }
-        return dto.getId();
+        return dto;
     }
 
     @PutMapping("/{id}")
