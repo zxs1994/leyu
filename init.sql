@@ -120,6 +120,33 @@ CREATE TABLE `sys__role_permission` (
 
 
 -- ----------------------------
+-- Table structure for sys__operation_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys__operation_log`;
+CREATE TABLE `sys__operation_log` (
+  `id` BIGINT NOT NULL COMMENT '主键',
+  `user_id` BIGINT DEFAULT NULL COMMENT '用户ID',
+  `tenant_id` BIGINT DEFAULT NULL COMMENT '租户 / 公司ID（SaaS隔离）',
+  `action` VARCHAR(50) NOT NULL COMMENT '操作行为',
+  `module` VARCHAR(64) DEFAULT NULL COMMENT '业务模块',
+  `data_id` VARCHAR(64) DEFAULT NULL COMMENT '业务数据ID',
+  `method` VARCHAR(50) NOT NULL COMMENT '请求方式',
+  `path` VARCHAR(512) NOT NULL COMMENT '请求路径',
+  `status` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '状态：1=成功，0=失败',
+  `error_msg` TEXT DEFAULT NULL COMMENT '失败原因',
+  `ip` VARCHAR(50) NOT NULL COMMENT 'IP地址',
+  `user_agent` VARCHAR(512) NOT NULL COMMENT '用户代理',
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id_created_at` (`user_id`,`created_at`),
+  KEY `idx_module_data_id` (`module`,`data_id`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统--操作日志表';
+
+
+-- ----------------------------
 -- 初始化系统数据
 -- ----------------------------
 
@@ -158,10 +185,10 @@ INSERT INTO `sys__role_permission` (`role_id`, `permission_id`, `source`) VALUES
 
 
 -- ----------------------------
--- Table structure for data_scope_test 用来测试数据权限
+-- Table structure for test__data_scope 用来测试数据权限
 -- ----------------------------
-DROP TABLE IF EXISTS `data_scope_test`;
-CREATE TABLE `data_scope_test` (
+DROP TABLE IF EXISTS `test__data_scope`;
+CREATE TABLE `test__data_scope` (
   `id` BIGINT NOT NULL COMMENT '主键',
   `tenant_id` BIGINT DEFAULT NULL COMMENT '租户 / 公司ID（SaaS隔离）',
   `name` VARCHAR(50) NOT NULL COMMENT '名称',
@@ -174,4 +201,4 @@ CREATE TABLE `data_scope_test` (
   KEY idx_tenant (tenant_id),
   KEY idx_dept (dept_id),
   KEY idx_creator (creator_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='数据权限测试表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='测试--数据权限表';

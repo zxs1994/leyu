@@ -8,15 +8,18 @@ import java.time.OffsetDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class DataScopeTestQuery extends BaseQuery {
+public class SysOperationLogQuery extends BaseQuery {
 
-    @Schema(description="名称")
-    private String name;
+    @Schema(description = "状态：1=成功，0=失败")
+    private Boolean status;
 
-    @Schema(description="创建时间 - 开始")
+    @Schema(description = "创建时间 - 开始")
     private OffsetDateTime createdAtStart;
 
-    @Schema(description="创建时间 - 结束")
+    @Schema(description = "创建时间 - 结束")
     private OffsetDateTime createdAtEnd;
+
+    @Schema(description = "用户ID")
+    private Long userId;
 
 }

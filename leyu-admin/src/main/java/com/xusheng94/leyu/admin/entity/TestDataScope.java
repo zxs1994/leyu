@@ -13,18 +13,18 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 /**
  * <p>
- * 数据权限测试表 实体
+ * 测试--数据权限表 实体
  * </p>
  *
  * @author xusheng
- * @since 2026-04-17 19:48:46
+ * @since 2026-04-23 14:31:17
  */
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("data_scope_test")
-@Schema(description = "数据权限测试表")
-public class DataScopeTest extends BaseEntity {
+@TableName("test__data_scope")
+@Schema(description = "测试--数据权限表")
+public class TestDataScope extends BaseEntity {
 
     @TableId(type = IdType.ASSIGN_ID)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

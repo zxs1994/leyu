@@ -1,11 +1,10 @@
 package com.xusheng94.leyu.admin.controller;
 
-import com.xusheng94.leyu.admin.config.myBatisPlus.IgnoreDataPermission;
 import com.xusheng94.leyu.common.BizException;
-import com.xusheng94.leyu.admin.service.IDataScopeTestService;
-import com.xusheng94.leyu.admin.model.query.DataScopeTestQuery;
-import com.xusheng94.leyu.admin.model.dto.DataScopeTestDto;
-import com.xusheng94.leyu.admin.model.vo.DataScopeTestVo;
+import com.xusheng94.leyu.admin.service.ITestDataScopeService;
+import com.xusheng94.leyu.admin.model.query.TestDataScopeQuery;
+import com.xusheng94.leyu.admin.model.dto.TestDataScopeDto;
+import com.xusheng94.leyu.admin.model.vo.TestDataScopeVo;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,33 +15,32 @@ import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * <p>
- * 数据权限测试表 Controller 控制器
+ * 测试--数据权限表 Controller 控制器
  * </p>
  *
  * @author xusheng
- * @since 2026-04-17 18:20:39
+ * @since 2026-04-23 14:31:17
  */
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/data-scope-test")
-@Tag(name = "数据权限测试", description = "数据权限测试控制器")
-public class DataScopeTestController {
+@RequestMapping("/test/data-scope")
+@Tag(name = "测试--数据权限", description = "测试--数据权限控制器")
+public class TestDataScopeController {
 
-    private static final String TITLE = "数据权限测试";
-    private final IDataScopeTestService dataScopeTestService;
+    private static final String TITLE = "数据权限";
+    private final ITestDataScopeService testDataScopeService;
 
-//    @IgnoreDataPermission  // 忽略数据权限
     @GetMapping("/page")
     @Operation(summary = TITLE + "列表(分页)")
-    public Page<DataScopeTestVo> page(DataScopeTestQuery query) {
-        return dataScopeTestService.page(query);
+    public Page<TestDataScopeVo> page(TestDataScopeQuery query) {
+        return testDataScopeService.page(query);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取" + TITLE)
-    public DataScopeTestVo item(@PathVariable Long id) {
-        DataScopeTestVo vo = dataScopeTestService.getVoById(id);
+    public TestDataScopeVo item(@PathVariable Long id) {
+        TestDataScopeVo vo = testDataScopeService.getVoById(id);
         if (vo == null) {
             throw new BizException(404, TITLE + "未找到");
         }
@@ -51,8 +49,8 @@ public class DataScopeTestController {
 
     @PostMapping
     @Operation(summary = "新增" + TITLE)
-    public Long add(@RequestBody DataScopeTestDto dto) {
-        boolean success = dataScopeTestService.save(dto);
+    public Long add(@RequestBody TestDataScopeDto dto) {
+        boolean success = testDataScopeService.save(dto);
         if (!success) {
             throw new BizException(400, "新增" + TITLE + "失败");
         }
@@ -61,9 +59,9 @@ public class DataScopeTestController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新" + TITLE)
-    public void update(@PathVariable Long id, @RequestBody DataScopeTestDto dto) {
+    public void update(@PathVariable Long id, @RequestBody TestDataScopeDto dto) {
         dto.setId(id);
-        boolean success = dataScopeTestService.updateById(dto);
+        boolean success = testDataScopeService.updateById(dto);
         if (!success) {
             throw new BizException(400, "更新" + TITLE + "失败");
         }
@@ -72,7 +70,7 @@ public class DataScopeTestController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除" + TITLE)
     public void delete(@PathVariable Long id) {
-        boolean success = dataScopeTestService.removeById(id);
+        boolean success = testDataScopeService.removeById(id);
         if (!success) {
             throw new BizException(400, "删除" + TITLE + "失败");
         }
@@ -80,8 +78,8 @@ public class DataScopeTestController {
 
 //    @GetMapping
 //    @Operation(summary = TITLE + "列表")
-//    public List<DataScopeTest> list() {
-//        return dataScopeTestService.list();
+//    public List<TestDataScope> list() {
+//        return testDataScopeService.list();
 //    }
 
 }

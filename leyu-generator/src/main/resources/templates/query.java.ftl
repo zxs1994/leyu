@@ -17,13 +17,13 @@ public class ${entity}Query extends BaseQuery {
 
 <#-- between：生成 start / end -->
 <#if cfg.operator == "between">
-    @Schema(description="${field.comment!field.name} - 开始")
+    @Schema(description = "${field.comment!field.name} - 开始")
     private ${cfg.fieldType!field.propertyType} ${field.propertyName}Start;
 
-    @Schema(description="${field.comment!field.name} - 结束")
+    @Schema(description = "${field.comment!field.name} - 结束")
     private ${cfg.fieldType!field.propertyType} ${field.propertyName}End;
 <#else>
-    @Schema(description="${field.comment!field.name}")
+    @Schema(description = "${field.comment!field.name}")
     private ${cfg.fieldType!field.propertyType} ${field.propertyName};
 </#if>
 

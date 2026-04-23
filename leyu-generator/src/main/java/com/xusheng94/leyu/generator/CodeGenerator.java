@@ -21,7 +21,7 @@ public class CodeGenerator {
         String moduleName = "leyu-admin";
 
         // 要生成代码的表
-        String tableName = "data_scope_test";
+        String tableName = "sys__operation_log";
 
         LoadYaml.setBusinessModule(moduleName);
 

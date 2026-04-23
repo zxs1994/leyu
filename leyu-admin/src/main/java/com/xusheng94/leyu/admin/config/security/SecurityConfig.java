@@ -33,11 +33,12 @@ import java.util.List;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@EnableAutoConfiguration(exclude = {UserDetailsServiceAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = { UserDetailsServiceAutoConfiguration.class })
 public class SecurityConfig {
 
     private final SecurityProperties securityProperties;
     private final SysPermissionFilter sysPermissionFilter;
+    private final SysOperationLogFilter sysOperationLogFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final SysPermissionCache sysPermissionCache;
 
@@ -59,42 +60,39 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
             ObjectMapper objectMapper) throws Exception {
 
         http
-            // 让 Spring Security 应用 corsConfigurationSource 配置
-            .cors(Customizer.withDefaults())
-            // 禁用 CSRF，因为我们用 JWT
-            .csrf(AbstractHttpConfigurer::disable)
-            // 不使用表单登录或 HTTP Basic
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
+                // 让 Spring Security 应用 corsConfigurationSource 配置
+                .cors(Customizer.withDefaults())
+                // 禁用 CSRF，因为我们用 JWT
+                .csrf(AbstractHttpConfigurer::disable)
+                // 不使用表单登录或 HTTP Basic
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
 
-            // 权限配置
-            .authorizeHttpRequests(auth -> auth
-                    // 白名单（Spring Security 级别）
-                    .requestMatchers(securityProperties.getWhitelistUrls().toArray(String[]::new))
-                    .permitAll()
+                // 权限配置
+                .authorizeHttpRequests(auth -> auth
+                        // 白名单（Spring Security 级别）
+                        .requestMatchers(securityProperties.getWhitelistUrls().toArray(String[]::new))
+                        .permitAll()
 
-                    // 其他一律要求登录（兜底）
-                    .anyRequest().authenticated()
-            )
+                        // 其他一律要求登录（兜底）
+                        .anyRequest().authenticated())
 
-            // 🔐 谁是谁 → before JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            // 🔑 能不能 → after 权限过滤
-            .addFilterAfter(sysPermissionFilter, JwtAuthenticationFilter.class)
+                // 🔐 谁是谁 → before JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // 🔑 能不能 → after 权限过滤
+                .addFilterAfter(sysOperationLogFilter, JwtAuthenticationFilter.class)
+                .addFilterAfter(sysPermissionFilter, SysOperationLogFilter.class)
 
-            // 返回 JSON 而不是默认 HTML 登录页
-            .exceptionHandling(ex -> ex
-                    .authenticationEntryPoint((req, res, e) ->
-                            handleAuthError(req, res, objectMapper, e))
-                    .accessDeniedHandler((req, res, e) ->
-                            handleAuthError(req, res, objectMapper, e))
-            );
+                // 返回 JSON 而不是默认 HTML 登录页
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, e) -> handleAuthError(req, res, objectMapper, e))
+                        .accessDeniedHandler((req, res, e) -> handleAuthError(req, res, objectMapper, e)));
 
         return http.build();
     }
@@ -106,8 +104,7 @@ public class SecurityConfig {
             HttpServletRequest request,
             HttpServletResponse response,
             ObjectMapper objectMapper,
-            Exception e
-    ) throws IOException {
+            Exception e) throws IOException {
         int code = response.getStatus();
         if (Boolean.TRUE.equals(request.getAttribute(JwtAuthenticationFilter.AUTH_EXPIRED_ATTR))) {
             code = 498;
@@ -120,16 +117,16 @@ public class SecurityConfig {
             String method = request.getMethod();
             // 原始uri
             String originalUri = (String) request.getAttribute(
-                    RequestDispatcher.ERROR_REQUEST_URI
-            );
+                    RequestDispatcher.ERROR_REQUEST_URI);
 
-            SysPermission rule = SysPermissionMatcher.matchExactThenGlobal(sysPermissionCache.listAll(), method, originalUri);
+            SysPermission rule = SysPermissionMatcher.matchExactThenGlobal(sysPermissionCache.listAll(), method,
+                    originalUri);
 
             log.info("Permission check start: method={}, uri={}", method, originalUri);
             log.info("Matched rule: {}", rule);
 
             if (rule != null) {
-                body = ApiResponse.fail(code, rule,"没有 " + rule.getName() + " 权限");
+                body = ApiResponse.fail(code, rule, "没有 " + rule.getName() + " 权限");
             } else {
                 body = ApiResponse.fail(code);
             }

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 /**
  * 全局统一响应体
+ * 
  * @param <T> 返回数据类型
  */
 @Getter
@@ -28,7 +29,8 @@ public class ApiResponse<T> {
     /** 系统版本 */
     private String version;
 
-    public ApiResponse() {}
+    public ApiResponse() {
+    }
 
     public ApiResponse(int code, boolean success, T data, String msg) {
         this.success = success;
@@ -82,7 +84,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(code, false, null, getMsgByStatus(code));
     }
 
-    private static String getMsgByStatus(int status) {
+    public static String getMsgByStatus(int status) {
         return switch (status) {
             case 401 -> "请重新登录";
             case 403 -> "没有权限";
