@@ -72,7 +72,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 			ContentCachingResponseWrapper response) {
 		try {
 			JsonNode responseJson = readJson(response.getContentAsByteArray(), response.getCharacterEncoding());
-			boolean success = resolveSuccess(response, responseJson);
+			boolean success = resolveSuccess(request, response, responseJson);
 			String path = request.getRequestURI();
 			String method = request.getMethod();
 			Long userId = resolveUserId(request, responseJson, success);
@@ -216,7 +216,12 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 		return null;
 	}
 
-	private boolean resolveSuccess(ContentCachingResponseWrapper response, JsonNode responseJson) {
+	private boolean resolveSuccess(ContentCachingRequestWrapper request,
+			ContentCachingResponseWrapper response, JsonNode responseJson) {
+		Object requestAttrErrorMsg = request.getAttribute(OP_LOG_ERROR_MSG_ATTR);
+		if (requestAttrErrorMsg instanceof String msg && StringUtils.hasText(msg)) {
+			return false;
+		}
 		if (responseJson != null && responseJson.has("success")) {
 			return responseJson.get("success").asBoolean();
 		}
@@ -244,7 +249,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 
 		int status = response.getStatus();
 		return status >= HttpServletResponse.SC_BAD_REQUEST
-				? ApiResponse.getMsgByStatus(status)
+				? ApiResponse.fail(status).getMsg()
 				: null;
 	}
 

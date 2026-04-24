@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,6 +25,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class SysPermissionFilter extends OncePerRequestFilter {
+
+    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     private final SysPermissionMapper sysPermissionMapper;
     private final SysPermissionCache sysPermissionCache;
@@ -37,6 +40,11 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
+        if (shouldBypass(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         AuthLevel authLevel = authLevelResolver.resolve(path);
 
         // 1️⃣ 白名单直接放行
@@ -48,7 +56,7 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         // 2️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
         if (!CurrentUser.isLogin()) {
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
-                    ApiResponse.getMsgByStatus(HttpServletResponse.SC_UNAUTHORIZED));
+                    ApiResponse.fail(HttpServletResponse.SC_UNAUTHORIZED).getMsg());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -92,6 +100,19 @@ public class SysPermissionFilter extends OncePerRequestFilter {
                 && !requiredPermission.getName().isBlank()) {
             return "没有【" + requiredPermission.getName() + "】权限";
         }
-        return ApiResponse.getMsgByStatus(HttpServletResponse.SC_FORBIDDEN);
+        return ApiResponse.fail(HttpServletResponse.SC_FORBIDDEN).getMsg();
+    }
+
+    private boolean shouldBypass(String path) {
+        List<SysPermission> permissions = sysPermissionCache.listAll();
+        if (permissions == null || permissions.isEmpty()) {
+            return false;
+        }
+
+        return permissions.stream()
+                .map(SysPermission::getPath)
+                .filter(permissionPath -> permissionPath != null && !permissionPath.isBlank())
+                .filter(permissionPath -> !"/**".equals(permissionPath))
+                .noneMatch(permissionPath -> PATH_MATCHER.match(permissionPath, path));
     }
 }

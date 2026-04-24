@@ -1,13 +1,15 @@
 package com.xusheng94.leyu.common.config;
 
 import com.xusheng94.leyu.common.BizException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.io.Resource;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,10 +22,9 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
-    public boolean supports(MethodParameter returnType, Class converterType) {
+        public boolean supports(MethodParameter returnType,
+            Class<? extends HttpMessageConverter<?>> converterType) {
 
         // 方法上标注
         if (returnType.hasMethodAnnotation(NoApiWrap.class)) {
@@ -40,7 +41,9 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType contentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType contentType,
+            Class<? extends HttpMessageConverter<?>> selectedConverterType,
+            ServerHttpRequest request, ServerHttpResponse response) {
 
         String path = request.getURI().getPath();
         if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
@@ -81,6 +84,16 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
 
     @ExceptionHandler(NotFoundException.class)
     public ApiResponse<String> handleNotFoundException(NotFoundException ex) {
+        return ApiResponse.fail(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ApiResponse<String> handleNoResourceFoundException(NoResourceFoundException ex) {
+        return ApiResponse.fail(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ApiResponse<String> handleNoHandlerFoundException(NoHandlerFoundException ex) {
         return ApiResponse.fail(404, ex.getMessage());
     }
 
