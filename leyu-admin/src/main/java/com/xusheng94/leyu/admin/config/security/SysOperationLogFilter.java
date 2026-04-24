@@ -64,11 +64,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 	}
 
 	private boolean shouldSkip(HttpServletRequest request) {
-		String path = request.getRequestURI();
-		return !WRITE_METHODS.contains(request.getMethod())
-				|| path.startsWith("/v3/api-docs")
-				|| path.startsWith("/swagger-ui")
-				|| path.startsWith("/sys/operation-log");
+		return !WRITE_METHODS.contains(request.getMethod());
 	}
 
 	private void persistOperationLog(ContentCachingRequestWrapper request,
