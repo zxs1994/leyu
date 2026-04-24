@@ -17,6 +17,11 @@ import com.xusheng94.leyu.admin.model.vo.SysOperationLogVo;
 public interface ISysOperationLogService extends IService<SysOperationLog> {
 
     /**
+     * 异步写入操作日志，避免阻塞主请求。
+     */
+    void saveAsync(SysOperationLog operationLog);
+
+    /**
      * 分页查询
      * @param query 查询参数
      * @return 分页结果 VO

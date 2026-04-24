@@ -6,7 +6,7 @@ import com.xusheng94.leyu.admin.cache.SysPermissionCache;
 import com.xusheng94.leyu.admin.config.security.jwt.JwtUtils;
 import com.xusheng94.leyu.admin.entity.SysOperationLog;
 import com.xusheng94.leyu.admin.entity.SysPermission;
-import com.xusheng94.leyu.admin.mapper.SysOperationLogMapper;
+import com.xusheng94.leyu.admin.service.ISysOperationLogService;
 import com.xusheng94.leyu.admin.util.CurrentUser;
 import com.xusheng94.leyu.admin.util.SysPermissionMatcher;
 import com.xusheng94.leyu.common.ApiResponse;
@@ -38,7 +38,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 	private static final Set<String> WRITE_METHODS = Set.of("POST", "PUT", "PATCH", "DELETE");
 	private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
-	private final SysOperationLogMapper sysOperationLogMapper;
+	private final ISysOperationLogService sysOperationLogService;
 	private final SysPermissionCache sysPermissionCache;
 	private final JwtUtils jwtUtils;
 	private final ObjectMapper objectMapper;
@@ -96,7 +96,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 					.setErrorMsg(success ? null : resolveErrorMessage(response, responseJson, matchedPermission));
 			operationLog.setIp(truncate(resolveIp(request), 50));
 			operationLog.setUserAgent(truncate(request.getHeader("User-Agent"), 512));
-			sysOperationLogMapper.insert(operationLog);
+			sysOperationLogService.saveAsync(operationLog);
 		} catch (Exception ex) {
 			log.warn("Persist operation log failed, method={}, path={}", request.getMethod(), request.getRequestURI(), ex);
 		}
@@ -242,8 +242,9 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 
 		int status = response.getStatus();
 		if (status == HttpServletResponse.SC_FORBIDDEN) {
-			if (matchedPermission != null && StringUtils.hasText(matchedPermission.getName())) {
-				return "没有 " + matchedPermission.getName() + " 权限";
+			if (matchedPermission != null &&
+					StringUtils.hasText(matchedPermission.getName())) {
+				return "没有【" + matchedPermission.getName() + "】权限";
 			}
 			return "没有权限";
 		}

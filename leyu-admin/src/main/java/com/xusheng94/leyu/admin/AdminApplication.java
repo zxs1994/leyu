@@ -9,11 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication(scanBasePackages = {
         "${project.base-package}",
         "${project.parent-package}.common"
 })
+@EnableAsync
 @RequiredArgsConstructor
 public class AdminApplication {
 

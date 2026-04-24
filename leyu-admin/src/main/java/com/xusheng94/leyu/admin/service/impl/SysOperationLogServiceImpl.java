@@ -10,6 +10,8 @@ import com.xusheng94.leyu.admin.service.ISysOperationLogService;
 import com.xusheng94.leyu.admin.model.query.SysOperationLogQuery;
 import com.xusheng94.leyu.admin.model.vo.SysOperationLogVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,10 +33,22 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMapper, SysOperationLog>
         implements ISysOperationLogService {
 
     private final SysUserMapper sysUserMapper;
+
+    @Override
+    @Async
+    public void saveAsync(SysOperationLog operationLog) {
+        try {
+            this.save(operationLog);
+        } catch (Exception ex) {
+            log.warn("Persist operation log async failed, method={}, path={}",
+                    operationLog.getMethod(), operationLog.getPath(), ex);
+        }
+    }
 
     /**
      * 分页查询（返回 VO）
@@ -59,6 +73,8 @@ public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMappe
         if (query.getUserId() != null && query.getUserId() != 0L) {
             qw.eq("user_id", query.getUserId());
         }
+
+        qw.orderByDesc("created_at").orderByAsc("id");
 
         entityPage = super.page(entityPage, qw);
         Map<Long, String> usernameMap = buildUsernameMap(entityPage.getRecords());

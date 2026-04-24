@@ -126,7 +126,7 @@ public class SecurityConfig {
             log.info("Matched rule: {}", rule);
 
             if (rule != null) {
-                body = ApiResponse.fail(code, rule, "没有 " + rule.getName() + " 权限");
+                body = ApiResponse.fail(code, rule, "没有【" + rule.getName() + "】权限");
             } else {
                 body = ApiResponse.fail(code);
             }
