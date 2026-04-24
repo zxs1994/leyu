@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -55,18 +57,16 @@ public class SysPermissionFilter extends OncePerRequestFilter {
 
         // 2️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
         if (!CurrentUser.isLogin()) {
-            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
-                    ApiResponse.fail(HttpServletResponse.SC_UNAUTHORIZED).getMsg());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            String message = ApiResponse.fail(HttpServletResponse.SC_UNAUTHORIZED).getMsg();
+            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
+            throw new AuthenticationCredentialsNotFoundException(message);
         }
 
         // 3️⃣ 平台专属接口：仅平台用户可访问
         if (authLevel == AuthLevel.PLATFORM_ONLY && !CurrentUser.isPlatformUser()) {
-            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
-                    resolveForbiddenMessage(sysPermission));
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
+            String message = resolveForbiddenMessage(sysPermission);
+            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
+            throw new AccessDeniedException(message);
         }
 
         // 4️⃣ 登录即可
@@ -87,9 +87,9 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         if (matched != null) {
             filterChain.doFilter(request, response);
         } else {
-            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
-                    resolveForbiddenMessage(sysPermission));
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            String message = resolveForbiddenMessage(sysPermission);
+            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
+            throw new AccessDeniedException(message);
         }
     }
 

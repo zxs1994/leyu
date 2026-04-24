@@ -12,12 +12,15 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,7 +36,6 @@ import java.util.List;
 @EnableAutoConfiguration(exclude = { UserDetailsServiceAutoConfiguration.class })
 public class SecurityConfig {
 
-    private final SecurityProperties securityProperties;
     private final SysPermissionFilter sysPermissionFilter;
     private final SysOperationLogFilter sysOperationLogFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -70,20 +72,14 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
 
-                // 权限配置
-                .authorizeHttpRequests(auth -> auth
-                        // 白名单（Spring Security 级别）
-                        .requestMatchers(securityProperties.getWhitelistUrls().toArray(String[]::new))
-                        .permitAll()
-
-                    // 其余请求放行，具体鉴权交给 SysPermissionFilter
-                    .anyRequest().permitAll())
+                // 权限配置：所有请求放行，具体鉴权交给 SysPermissionFilter
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
 
                 // 🔐 谁是谁 → before JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // 🔑 能不能 → after 权限过滤
                 .addFilterAfter(sysOperationLogFilter, JwtAuthenticationFilter.class)
-                .addFilterAfter(sysPermissionFilter, SysOperationLogFilter.class)
+                .addFilterAfter(sysPermissionFilter, ExceptionTranslationFilter.class)
 
                 // 返回 JSON 而不是默认 HTML 登录页
                 .exceptionHandling(ex -> ex
@@ -101,10 +97,7 @@ public class SecurityConfig {
             HttpServletResponse response,
             ObjectMapper objectMapper,
             Exception e) throws IOException {
-        int code = response.getStatus();
-        if (Boolean.TRUE.equals(request.getAttribute(JwtAuthenticationFilter.AUTH_EXPIRED_ATTR))) {
-            code = 498;
-        }
+        int code = resolveCode(request, e);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
         String messageFromRequest = (String) request.getAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR);
@@ -113,6 +106,19 @@ public class SecurityConfig {
                 : ApiResponse.fail(code);
 
         response.getWriter().write(objectMapper.writeValueAsString(body));
+    }
+
+    private int resolveCode(HttpServletRequest request, Exception e) {
+        if (Boolean.TRUE.equals(request.getAttribute(JwtAuthenticationFilter.AUTH_EXPIRED_ATTR))) {
+            return 498;
+        }
+        if (e instanceof AccessDeniedException) {
+            return HttpServletResponse.SC_FORBIDDEN;
+        }
+        if (e instanceof AuthenticationException) {
+            return HttpServletResponse.SC_UNAUTHORIZED;
+        }
+        return HttpServletResponse.SC_UNAUTHORIZED;
     }
 
 }
