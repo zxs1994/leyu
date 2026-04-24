@@ -128,7 +128,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 	}
 
 	private SysPermission resolvePermission(String method, String path) {
-		return SysPermissionMatcher.matchExactThenGlobal(sysPermissionCache.listAll(), method, path);
+		return SysPermissionMatcher.matchExact(sysPermissionCache.listAll(), method, path);
 	}
 
 	private String resolveAction(SysPermission matchedPermission) {

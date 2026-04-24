@@ -11,20 +11,17 @@ public class SysPermissionMatcher {
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     /**
-     * 从精确到全局匹配
+     * 精确路径匹配（不含通配路径（/**、/sys/**）），用于判断路径是否属于已知权限路径
      */
-    public static SysPermission matchExactThenGlobal(
+    public static SysPermission matchExact(
             List<SysPermission> allPermissions,
             String method,
-            String path
-    ) {
+            String path) {
 
         // 1️⃣ 先过滤 method（支持 *）
         List<SysPermission> methodMatched = allPermissions.stream()
-                .filter(p ->
-                        "*".equals(p.getMethod())
-                                || p.getMethod().equalsIgnoreCase(method)
-                )
+                .filter(p -> "*".equals(p.getMethod())
+                        || p.getMethod().equalsIgnoreCase(method))
                 .toList();
 
         // 2️⃣ 精确路径优先（如 /sys/role/{id}）
@@ -34,18 +31,16 @@ public class SysPermissionMatcher {
                 .findFirst()
                 .orElse(null);
 
-
-        if (exact != null) {
-            System.out.println(exact.toString());
+//         if (exact != null) {
             return exact;
-        }
+//         }
 
         // 3️⃣ 通配路径（/**、/sys/**），按“路径具体度”排序
-        return methodMatched.stream()
-                .filter(p -> antPathMatcher.match(p.getPath(), path))
-                .sorted(Comparator.comparingInt(SysPermissionMatcher::pathSpecificity).reversed())
-                .findFirst()
-                .orElse(null);
+//        return methodMatched.stream()
+//                .filter(p -> antPathMatcher.match(p.getPath(), path))
+//                .sorted(Comparator.comparingInt(SysPermissionMatcher::pathSpecificity).reversed())
+//                .findFirst()
+//                .orElse(null);
     }
 
     /**

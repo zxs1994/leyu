@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,8 +24,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class SysPermissionFilter extends OncePerRequestFilter {
-
-    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     private final SysPermissionMapper sysPermissionMapper;
     private final SysPermissionCache sysPermissionCache;
@@ -40,7 +37,10 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        if (shouldBypass(path)) {
+        SysPermission sysPermission = SysPermissionMatcher.matchExact(
+                sysPermissionCache.listAll(), method, path);
+
+        if (sysPermission == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -64,7 +64,7 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         // 3️⃣ 平台专属接口：仅平台用户可访问
         if (authLevel == AuthLevel.PLATFORM_ONLY && !CurrentUser.isPlatformUser()) {
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
-                    resolveForbiddenMessage(method, path));
+                    resolveForbiddenMessage(sysPermission));
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -88,14 +88,12 @@ public class SysPermissionFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
-                    resolveForbiddenMessage(method, path));
+                    resolveForbiddenMessage(sysPermission));
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 
-    private String resolveForbiddenMessage(String method, String path) {
-        SysPermission requiredPermission = SysPermissionMatcher.matchExactThenGlobal(
-                sysPermissionCache.listAll(), method, path);
+    private String resolveForbiddenMessage(SysPermission requiredPermission) {
         if (requiredPermission != null && requiredPermission.getName() != null
                 && !requiredPermission.getName().isBlank()) {
             return "没有【" + requiredPermission.getName() + "】权限";
@@ -103,16 +101,4 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         return ApiResponse.fail(HttpServletResponse.SC_FORBIDDEN).getMsg();
     }
 
-    private boolean shouldBypass(String path) {
-        List<SysPermission> permissions = sysPermissionCache.listAll();
-        if (permissions == null || permissions.isEmpty()) {
-            return false;
-        }
-
-        return permissions.stream()
-                .map(SysPermission::getPath)
-                .filter(permissionPath -> permissionPath != null && !permissionPath.isBlank())
-                .filter(permissionPath -> !"/**".equals(permissionPath))
-                .noneMatch(permissionPath -> PATH_MATCHER.match(permissionPath, path));
-    }
 }
