@@ -76,8 +76,8 @@ public class SecurityConfig {
                         .requestMatchers(securityProperties.getWhitelistUrls().toArray(String[]::new))
                         .permitAll()
 
-                        // 其他一律要求登录（兜底）
-                        .anyRequest().authenticated())
+                    // 其余请求放行，具体鉴权交给 SysPermissionFilter
+                    .anyRequest().permitAll())
 
                 // 🔐 谁是谁 → before JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
