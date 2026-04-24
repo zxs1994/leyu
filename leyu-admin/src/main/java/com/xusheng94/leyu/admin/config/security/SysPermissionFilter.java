@@ -1,6 +1,8 @@
 package com.xusheng94.leyu.admin.config.security;
 
 import com.xusheng94.leyu.common.config.IAuthLevelResolver;
+import com.xusheng94.leyu.common.ApiResponse;
+import com.xusheng94.leyu.admin.cache.SysPermissionCache;
 import com.xusheng94.leyu.admin.entity.SysPermission;
 import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.admin.mapper.SysPermissionMapper;
@@ -24,12 +26,13 @@ import java.util.List;
 public class SysPermissionFilter extends OncePerRequestFilter {
 
     private final SysPermissionMapper sysPermissionMapper;
+    private final SysPermissionCache sysPermissionCache;
     private final IAuthLevelResolver authLevelResolver;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getRequestURI();
         String method = request.getMethod();
@@ -44,12 +47,16 @@ public class SysPermissionFilter extends OncePerRequestFilter {
 
         // 2️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
         if (!CurrentUser.isLogin()) {
+            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
+                    ApiResponse.getMsgByStatus(HttpServletResponse.SC_UNAUTHORIZED));
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         // 3️⃣ 平台专属接口：仅平台用户可访问
         if (authLevel == AuthLevel.PLATFORM_ONLY && !CurrentUser.isPlatformUser()) {
+            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
+                    resolveForbiddenMessage(method, path));
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -72,7 +79,19 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         if (matched != null) {
             filterChain.doFilter(request, response);
         } else {
+            request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR,
+                    resolveForbiddenMessage(method, path));
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
+    }
+
+    private String resolveForbiddenMessage(String method, String path) {
+        SysPermission requiredPermission = SysPermissionMatcher.matchExactThenGlobal(
+                sysPermissionCache.listAll(), method, path);
+        if (requiredPermission != null && requiredPermission.getName() != null
+                && !requiredPermission.getName().isBlank()) {
+            return "没有【" + requiredPermission.getName() + "】权限";
+        }
+        return ApiResponse.getMsgByStatus(HttpServletResponse.SC_FORBIDDEN);
     }
 }

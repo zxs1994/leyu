@@ -37,6 +37,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 
 	private static final Set<String> WRITE_METHODS = Set.of("POST", "PUT", "PATCH", "DELETE");
 	private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+	public static final String OP_LOG_ERROR_MSG_ATTR = "opLogErrorMsg";
 
 	private final ISysOperationLogService sysOperationLogService;
 	private final SysPermissionCache sysPermissionCache;
@@ -89,7 +90,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 			operationLog.setPath(truncate(path, 512));
 			operationLog.setStatus(success);
 			operationLog
-					.setErrorMsg(success ? null : resolveErrorMessage(response, responseJson, matchedPermission));
+					.setErrorMsg(success ? null : resolveErrorMessage(request, response, responseJson));
 			operationLog.setIp(truncate(resolveIp(request), 50));
 			operationLog.setUserAgent(truncate(request.getHeader("User-Agent"), 512));
 			sysOperationLogService.saveAsync(operationLog);
@@ -222,8 +223,13 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 		return response.getStatus() < HttpServletResponse.SC_BAD_REQUEST;
 	}
 
-	private String resolveErrorMessage(ContentCachingResponseWrapper response,
-			JsonNode responseJson, SysPermission matchedPermission) {
+	private String resolveErrorMessage(ContentCachingRequestWrapper request,
+			ContentCachingResponseWrapper response, JsonNode responseJson) {
+		Object requestAttrErrorMsg = request.getAttribute(OP_LOG_ERROR_MSG_ATTR);
+		if (requestAttrErrorMsg instanceof String msg && StringUtils.hasText(msg)) {
+			return msg;
+		}
+
 		if (responseJson != null && responseJson.has("msg")) {
 			String msg = responseJson.get("msg").asText();
 			if (StringUtils.hasText(msg)) {
@@ -237,15 +243,7 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 		}
 
 		int status = response.getStatus();
-		if (status == HttpServletResponse.SC_FORBIDDEN) {
-			if (matchedPermission != null &&
-					StringUtils.hasText(matchedPermission.getName())) {
-				return "没有【" + matchedPermission.getName() + "】权限";
-			}
-			return "没有权限";
-		}
-
-		return response.getStatus() >= HttpServletResponse.SC_BAD_REQUEST
+		return status >= HttpServletResponse.SC_BAD_REQUEST
 				? ApiResponse.getMsgByStatus(status)
 				: null;
 	}

@@ -1,13 +1,9 @@
 package com.xusheng94.leyu.admin.config.security;
 
-import com.xusheng94.leyu.admin.cache.SysPermissionCache;
 import com.xusheng94.leyu.common.ApiResponse;
 import com.xusheng94.leyu.admin.config.security.jwt.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.xusheng94.leyu.admin.entity.SysPermission;
-import com.xusheng94.leyu.admin.util.SysPermissionMatcher;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +37,6 @@ public class SecurityConfig {
     private final SysPermissionFilter sysPermissionFilter;
     private final SysOperationLogFilter sysOperationLogFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final SysPermissionCache sysPermissionCache;
 
     // 注册密码加密 Bean
     @Bean
@@ -111,29 +107,10 @@ public class SecurityConfig {
         }
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
-        ApiResponse<?> body;
-
-        if (code == HttpServletResponse.SC_FORBIDDEN) {
-            String method = request.getMethod();
-            // 原始uri
-            String originalUri = (String) request.getAttribute(
-                    RequestDispatcher.ERROR_REQUEST_URI);
-
-            SysPermission rule = SysPermissionMatcher.matchExactThenGlobal(sysPermissionCache.listAll(), method,
-                    originalUri);
-
-            log.info("Permission check start: method={}, uri={}", method, originalUri);
-            log.info("Matched rule: {}", rule);
-
-            if (rule != null) {
-                body = ApiResponse.fail(code, rule, "没有【" + rule.getName() + "】权限");
-            } else {
-                body = ApiResponse.fail(code);
-            }
-
-        } else {
-            body = ApiResponse.fail(code);
-        }
+        String messageFromRequest = (String) request.getAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR);
+        ApiResponse<?> body = StringUtils.hasText(messageFromRequest)
+                ? ApiResponse.fail(code, messageFromRequest)
+                : ApiResponse.fail(code);
 
         response.getWriter().write(objectMapper.writeValueAsString(body));
     }
