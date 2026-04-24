@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
 
     @Override
-        public boolean supports(MethodParameter returnType,
+    public boolean supports(MethodParameter returnType,
             Class<? extends HttpMessageConverter<?>> converterType) {
 
         // 方法上标注
@@ -41,7 +41,7 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-        public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType contentType,
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType contentType,
             Class<? extends HttpMessageConverter<?>> selectedConverterType,
             ServerHttpRequest request, ServerHttpResponse response) {
 
@@ -68,11 +68,6 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
         return ApiResponse.success(body);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ApiResponse<String> handleException(Exception ex) {
-        return ApiResponse.fail(500, ex.getMessage());
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<String> handleValidationException(MethodArgumentNotValidException ex) {
         String msg = ex.getBindingResult().getFieldErrors()
@@ -80,6 +75,11 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
                 .map(f -> f.getField() + ":" + f.getDefaultMessage())
                 .collect(Collectors.joining("; "));
         return ApiResponse.fail(400, msg);
+    }
+
+    @ExceptionHandler(BizException.class)
+    public ApiResponse<String> handleBizException(BizException ex) {
+        return ApiResponse.fail(ex.getCode(), ex.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -97,8 +97,9 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
         return ApiResponse.fail(404, ex.getMessage());
     }
 
-    @ExceptionHandler(BizException.class)
-    public ApiResponse<String> handleBizException(BizException ex) {
-        return ApiResponse.fail(ex.getCode(), ex.getMessage());
+    // 通用异常处理（兜底）
+    @ExceptionHandler(Exception.class)
+    public ApiResponse<String> handleException(Exception ex) {
+        return ApiResponse.fail(500, ex.getMessage());
     }
 }
