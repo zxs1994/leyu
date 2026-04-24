@@ -42,6 +42,7 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         SysPermission sysPermission = SysPermissionMatcher.matchExact(
                 sysPermissionCache.listAll(), method, path);
 
+        // 1️⃣ 没有匹配的权限路径 404
         if (sysPermission == null) {
             filterChain.doFilter(request, response);
             return;
@@ -49,33 +50,33 @@ public class SysPermissionFilter extends OncePerRequestFilter {
 
         AuthLevel authLevel = authLevelResolver.resolve(path);
 
-        // 1️⃣ 白名单直接放行
+        // 2️⃣ 白名单直接放行
         if (authLevel == AuthLevel.WHITELIST) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 2️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
+        // 3️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
         if (!CurrentUser.isLogin()) {
             String message = ApiResponse.fail(HttpServletResponse.SC_UNAUTHORIZED).getMsg();
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
             throw new AuthenticationCredentialsNotFoundException(message);
         }
 
-        // 3️⃣ 平台专属接口：仅平台用户可访问
+        // 4️⃣ 平台专属接口：仅平台用户可访问
         if (authLevel == AuthLevel.PLATFORM_ONLY && !CurrentUser.isPlatformUser()) {
             String message = resolveForbiddenMessage(sysPermission);
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
             throw new AccessDeniedException(message);
         }
 
-        // 4️⃣ 登录即可
+        // 5️⃣ 登录即可
         if (authLevel == AuthLevel.LOGIN_ONLY) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 5️⃣ NORMAL：需要权限校验
+        // 6️⃣ NORMAL：需要权限校验
         Long userId = CurrentUser.getUserId();
         List<SysPermission> userPermissions = sysPermissionMapper.selectByUserId(userId);
 
