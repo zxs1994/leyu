@@ -53,14 +53,20 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
-		ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
+		ContentCachingRequestWrapper cachedRequest = new ContentCachingRequestWrapper(request);
+		// 用缓存包装响应，等后续链路写完响应体后再回到这里读取内容记录日志。
+		ContentCachingResponseWrapper cachedResponse = new ContentCachingResponseWrapper(response);
 
 		try {
-			filterChain.doFilter(wrappedRequest, wrappedResponse);
+			filterChain.doFilter(cachedRequest, cachedResponse);
+			// 后续链路处理完后，finally 里才执行persistOperationLog
 		} finally {
-			persistOperationLog(wrappedRequest, wrappedResponse);
-			wrappedResponse.copyBodyToResponse();
+			// 此时cachedResponse里已经有响应内容，所以这里能读到response body。
+			persistOperationLog(cachedRequest, cachedResponse);
+			// ⭐ 重要！将缓存的响应体写回原 response 输出，否则前端会收不到响应体内容
+			// 后续链路写入的是 cachedResponse 的内部缓冲区，不会自动回流到真实 HttpServletResponse。
+			// 所以必须在 finally 里调用 copyBodyToResponse 调用点，把缓存内容真正写回客户端。
+			cachedResponse.copyBodyToResponse();
 		}
 	}
 
@@ -68,15 +74,16 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 		return !WRITE_METHODS.contains(request.getMethod());
 	}
 
-	private void persistOperationLog(ContentCachingRequestWrapper request,
-			ContentCachingResponseWrapper response) {
+	private void persistOperationLog(ContentCachingRequestWrapper cachedRequest,
+			ContentCachingResponseWrapper cachedResponse) {
 		try {
-			JsonNode responseJson = readJson(response.getContentAsByteArray(), response.getCharacterEncoding());
-			boolean success = resolveSuccess(request, response, responseJson);
-			String path = request.getRequestURI();
-			String method = request.getMethod();
-			Long userId = resolveUserId(request, responseJson, success);
-			String requestBody = getContentAsString(request.getContentAsByteArray(), request.getCharacterEncoding());
+			JsonNode responseJson = readJson(cachedResponse.getContentAsByteArray(), cachedResponse.getCharacterEncoding());
+			boolean success = resolveSuccess(cachedRequest, cachedResponse, responseJson);
+			String path = cachedRequest.getRequestURI();
+			String method = cachedRequest.getMethod();
+			Long userId = resolveUserId(cachedRequest, responseJson, success);
+			String requestBody = getContentAsString(cachedRequest.getContentAsByteArray(),
+					cachedRequest.getCharacterEncoding());
 			JsonNode requestJson = readJson(requestBody);
 			SysPermission matchedPermission = resolvePermission(method, path);
 
@@ -90,12 +97,13 @@ public class SysOperationLogFilter extends OncePerRequestFilter {
 			operationLog.setPath(truncate(path, 512));
 			operationLog.setStatus(success);
 			operationLog
-					.setErrorMsg(success ? null : resolveErrorMessage(request, response, responseJson));
-			operationLog.setIp(truncate(resolveIp(request), 50));
-			operationLog.setUserAgent(truncate(request.getHeader("User-Agent"), 512));
+					.setErrorMsg(success ? null : resolveErrorMessage(cachedRequest, cachedResponse, responseJson));
+			operationLog.setIp(truncate(resolveIp(cachedRequest), 50));
+			operationLog.setUserAgent(truncate(cachedRequest.getHeader("User-Agent"), 512));
 			sysOperationLogService.saveAsync(operationLog);
 		} catch (Exception ex) {
-			log.warn("Persist operation log failed, method={}, path={}", request.getMethod(), request.getRequestURI(), ex);
+			log.warn("Persist operation log failed, method={}, path={}", cachedRequest.getMethod(),
+					cachedRequest.getRequestURI(), ex);
 		}
 	}
 
