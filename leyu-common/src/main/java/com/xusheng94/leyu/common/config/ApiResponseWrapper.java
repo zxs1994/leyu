@@ -1,5 +1,7 @@
 package com.xusheng94.leyu.common.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xusheng94.leyu.common.BizException;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.core.MethodParameter;
@@ -16,11 +18,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.xusheng94.leyu.common.ApiResponse;
 import com.xusheng94.leyu.common.NoApiWrap;
+import lombok.RequiredArgsConstructor;
 
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
+
+    private final ObjectMapper objectMapper;
 
     @Override
     public boolean supports(MethodParameter returnType,
@@ -62,6 +68,16 @@ public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
         // 兜底：按响应头判断为二进制时直接放行
         if (contentType != null && MediaType.APPLICATION_OCTET_STREAM.includes(contentType)) {
             return body;
+        }
+
+        // String 返回值会走 StringHttpMessageConverter，必须返回字符串避免 ClassCastException。
+        if (body instanceof String) {
+            response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+            try {
+                return objectMapper.writeValueAsString(ApiResponse.success(body));
+            } catch (JsonProcessingException ex) {
+                throw new IllegalStateException("Serialize ApiResponse for String body failed", ex);
+            }
         }
 
         // 普通对象直接包装

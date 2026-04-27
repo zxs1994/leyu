@@ -27,4 +27,10 @@ public class TestController {
         headers.setContentDisposition(ContentDisposition.attachment().filename("test.csv").build());
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/string")
+    @Operation(summary = "获取String类型测试")
+    public String string() {
+        return "abc";
+    }
 }
