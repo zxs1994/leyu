@@ -3,14 +3,12 @@ package com.xusheng94.leyu.admin.config.myBatisPlus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.xusheng94.leyu.admin.util.CurrentUser;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-@Slf4j
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
@@ -26,13 +24,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         // 前端传值没有作用, 因为该字段上有@JsonProperty(access = JsonProperty.Access.READ_ONLY)
         this.fillStrategy(metaObject, "creatorId", CurrentUser.getUserId());
         this.fillStrategy(metaObject, "deptId", CurrentUser.getDeptId());
-
-        if (metaObject.hasGetter("id") && metaObject.getValue("id") != null) {
-            log.warn(
-                    "Insert entity with preset ID detected, id={}, class={}",
-                    metaObject.getValue("id"),
-                    metaObject.getOriginalObject().getClass().getSimpleName());
-        }
     }
 
     @Override
