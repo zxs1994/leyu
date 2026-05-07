@@ -77,8 +77,9 @@ public class SecurityConfig {
 
                 // 🔐 谁是谁 → before JWT 过滤器放在 UsernamePasswordAuthenticationFilter 前
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                // 🔑 能不能 → after 权限过滤
+                // 📝 操作日志 → after JWT 过滤器，这样可以记录未认证用户的操作日志
                 .addFilterAfter(sysOperationLogFilter, JwtAuthenticationFilter.class)
+                // 🔑 权限校验 → after ExceptionTranslationFilter，这样可以确保权限异常被正确处理
                 .addFilterAfter(sysPermissionFilter, ExceptionTranslationFilter.class)
 
                 // 返回 JSON 而不是默认 HTML 登录页

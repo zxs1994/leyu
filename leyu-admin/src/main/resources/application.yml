@@ -15,10 +15,6 @@ spring:
 # 安全设置
 security:
     whitelist-urls:
-        - /swagger-ui/**
-        - /swagger-ui.html
-        - /v3/api-docs/**
-        - /favicon.ico
         - /common/**
         - /auth/**
     login-only-urls:

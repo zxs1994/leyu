@@ -39,10 +39,13 @@ public class SysPermissionFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
+        // System.out.println("SysPermissionFilter checking, method=" + method + ", path=" + path);
         SysPermission sysPermission = SysPermissionMatcher.matchExact(
                 sysPermissionCache.listAll(), method, path);
 
-        // 1️⃣ 没有匹配的权限路径 404
+        // 1️⃣ 没有匹配的权限路径 可能是404或者swagger-ui之类的接口，直接放行，由后续的机制处理（如404）
+        // 注意：不能在这里直接返回404，因为可能是 swagger-ui 之类的接口，这些接口不需要权限，但确实没有权限数据
+        // 所以这里的机制是：如果没有权限数据，直接放行，由后续的机制处理（如404），而不是在这里直接返回404
         if (sysPermission == null) {
             filterChain.doFilter(request, response);
             return;
