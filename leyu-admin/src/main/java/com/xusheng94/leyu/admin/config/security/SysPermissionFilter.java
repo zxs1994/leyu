@@ -51,7 +51,7 @@ public class SysPermissionFilter extends OncePerRequestFilter {
             return;
         }
 
-        AuthLevel authLevel = authLevelResolver.resolve(path);
+        AuthLevel authLevel = authLevelResolver.resolve(method, path);
 
         // 2️⃣ 白名单直接放行
         if (authLevel == AuthLevel.WHITELIST) {

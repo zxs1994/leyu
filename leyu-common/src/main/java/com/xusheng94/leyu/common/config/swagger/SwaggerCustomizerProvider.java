@@ -37,10 +37,6 @@ public class SwaggerCustomizerProvider {
                 return operation;
             }
 
-            // 3️⃣ void / Void 也要包
-            boolean isVoid =
-                    returnType == void.class || returnType == Void.class;
-
             io.swagger.v3.oas.models.responses.ApiResponse response200 =
                     operation.getResponses().get("200");
             if (response200 == null) {
@@ -78,12 +74,12 @@ public class SwaggerCustomizerProvider {
     public OpenApiCustomizer securityCustomizer() {
 
         return openApi -> openApi.getPaths().forEach((path, pathItem) -> {
-            AuthLevel level = authLevelResolver.resolve(path);
-            if (level != AuthLevel.WHITELIST) {
-                pathItem.readOperations().forEach(op ->
-                        op.addSecurityItem(new SecurityRequirement().addList("jwt"))
-                );
-            }
+            pathItem.readOperationsMap().forEach((httpMethod, operation) -> {
+                AuthLevel level = authLevelResolver.resolve(httpMethod.name(), path);
+                if (level != AuthLevel.WHITELIST) {
+                    operation.addSecurityItem(new SecurityRequirement().addList("jwt"));
+                }
+            });
         });
     }
 

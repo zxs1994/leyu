@@ -194,7 +194,7 @@ public class SysPermissionScanner {
                         .eq("path", path)
         );
 
-        AuthLevel level = authLevelResolver.resolve(path);
+        AuthLevel level = authLevelResolver.resolve(method, path);
 
         if (p == null) {
             p = new SysPermission();

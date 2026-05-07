@@ -13,18 +13,25 @@ spring:
             write-dates-as-timestamps: false
 
 # 安全设置
+# 规则格式：
+#   - "METHOD /path"   精确匹配指定方法，与权限模型 method+path 对齐
+#   - "/path/**"       通配，不区分方法（适用于整组接口统一定级）
 security:
+    # 白名单：无需登录即可访问
     whitelist-urls:
-        - /common/**
-        - /auth/**
+        - GET /common/**      # 公共查询接口（枚举等）
+        - /auth/login         # 登录
+        - /auth/refresh       # 刷新 Token
+
+    # 登录即可：已登录用户均可访问，无需额外权限
     login-only-urls:
-        - /sys/user/info
-        - /sys/profile
-        - /sys/password
-        - /auth/logout
+        - /sys/user/info      # 当前用户个人信息（查/改）
+        - /auth/logout        # 退出登录
+
+    # 平台专属：仅平台管理员可访问，租户用户禁止
     platform-only-urls:
-        - /platform/**
-        - /sys/permission/**
+        - /platform/**        # 平台管理相关接口
+        - /sys/permission/**  # 权限管理接口
 
 # JWT 配置
 #  本项目使用 HS256 算法生成 JWT，
