@@ -5,4 +5,4 @@ project:
     parent-package: com.xusheng94.leyu
     base-package: com.xusheng94.leyu.admin
     module-name: leyu-admin
-    version: 1.0.2
+    version: 1.0.3
