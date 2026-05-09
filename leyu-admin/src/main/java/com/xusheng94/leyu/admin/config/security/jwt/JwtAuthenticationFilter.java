@@ -34,27 +34,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String token = jwtUtils.resolveToken(request);
 
-        if (token != null && jwtUtils.validateToken(token)) {
-            Long sysUserId = jwtUtils.getSysUserIdFromToken(token);
-            Integer tokenVersion = jwtUtils.getTokenVersion(token);
-            String email = jwtUtils.getSubjectFromToken(token);
-            SysUser sysUser = sysUserMapper.selectById(sysUserId);
+        if (token != null) {
+            // 先区分可用 token 与已过期 token（其他非法 token 直接忽略）。
+            boolean validToken = jwtUtils.validateToken(token);
+            boolean expiredToken = !validToken && jwtUtils.isTokenExpired(token);
 
-            log.debug("sysUserId = {}", sysUserId);
-            if (sysUser != null 	                                   // 🚫 防已删除用户
-                    && sysUser.getStatus()                             // 🚫 防已禁用用户
-                    && tokenVersion.equals(sysUser.getTokenVersion())  // 🚫 防并发登录 / 踢人
-                    && email.equals(sysUser.getEmail())                // 🚫 防敏感信息变更后 token 继续生效
-            ) {
-                UsernamePasswordAuthenticationToken auth = jwtUtils.getAuthentication(token);
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            if (validToken || expiredToken) {
+                // 两条分支都需要用户与版本号校验，统一在外层提取，避免重复查询。
+                Long sysUserId = jwtUtils.getSysUserIdFromToken(token);
+                Integer tokenVersion = jwtUtils.getTokenVersion(token);
+                SysUser sysUser = sysUserMapper.selectById(sysUserId);
+
+                boolean versionMatch = sysUser != null && tokenVersion != null
+                        && tokenVersion.equals(sysUser.getTokenVersion());
+                // 设置认证信息，只有版本号匹配且 token 有效时才真正设置认证
+                if (versionMatch && validToken) {
+                    log.debug("sysUserId = {}", sysUserId);
+                    UsernamePasswordAuthenticationToken auth = jwtUtils.getAuthentication(token);
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+                // 过期但版本号匹配的 token 仅标记为过期。
+                if (versionMatch && expiredToken) {
+                    request.setAttribute(AUTH_EXPIRED_ATTR, true);
+                }
             }
-
-        } else if (token != null && jwtUtils.isTokenExpired(token)) {
-            request.setAttribute(AUTH_EXPIRED_ATTR, true);
         }
-
 
         // ⚠️ 无论有没有 token，都要继续往下走
         filterChain.doFilter(request, response);

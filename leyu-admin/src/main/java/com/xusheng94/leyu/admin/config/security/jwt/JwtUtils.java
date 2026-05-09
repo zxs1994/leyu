@@ -56,7 +56,7 @@ public class JwtUtils {
      * 获取用户 ID
      */
     public Long getSysUserIdFromToken(String token) {
-        return parseToken(token).getBody().get("id", Long.class);
+        return parseClaimsAllowExpired(token).get("id", Long.class);
     }
 
     /**
@@ -84,7 +84,7 @@ public class JwtUtils {
      * 获取token版本
      */
     public Integer getTokenVersion(String token) {
-        return parseToken(token).getBody().get("tokenVersion", Integer.class);
+        return parseClaimsAllowExpired(token).get("tokenVersion", Integer.class);
     }
 
     /**
@@ -121,6 +121,17 @@ public class JwtUtils {
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
+    }
+
+    /**
+     * 解析 Claims，token 过期时返回过期异常里的 claims。
+     */
+    private Claims parseClaimsAllowExpired(String token) {
+        try {
+            return parseToken(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     /**
