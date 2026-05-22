@@ -49,7 +49,7 @@ public class JwtUtils {
      * 获取Subject
      */
     public String getSubjectFromToken(String token) {
-        return parseToken(token).getBody().getSubject();
+        return parseClaimsAllowExpired(token).getSubject();
     }
 
     /**
@@ -63,21 +63,21 @@ public class JwtUtils {
      * 获取租户 ID
      */
     public Long getTenantIdFromToken(String token) {
-        return parseToken(token).getBody().get("tenantId", Long.class);
+        return parseClaimsAllowExpired(token).get("tenantId", Long.class);
     }
 
     /**
      * 获取部门 ID
      */
     public Long getDeptIdFromToken(String token) {
-        return parseToken(token).getBody().get("deptId", Long.class);
+        return parseClaimsAllowExpired(token).get("deptId", Long.class);
     }
 
     /**
      * 获取用户 source
      */
     public String getSourceFromToken(String token) {
-        return parseToken(token).getBody().get("source", String.class);
+        return parseClaimsAllowExpired(token).get("source", String.class);
     }
 
     /**

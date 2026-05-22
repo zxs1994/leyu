@@ -47,14 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 boolean versionMatch = sysUser != null && tokenVersion != null
                         && tokenVersion.equals(sysUser.getTokenVersion());
-                // 设置认证信息，只有版本号匹配且 token 有效时才真正设置认证
-                if (versionMatch && validToken) {
+                // 版本号匹配时写入认证信息，过期 token 也要让后续日志能拿到操作者。
+                if (versionMatch) {
                     log.debug("sysUserId = {}", sysUserId);
                     UsernamePasswordAuthenticationToken auth = jwtUtils.getAuthentication(token);
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-                // 过期但版本号匹配的 token 仅标记为过期。
+                // 过期且版本号匹配时，额外标记为过期，供刷新逻辑使用。
                 if (versionMatch && expiredToken) {
                     request.setAttribute(AUTH_EXPIRED_ATTR, true);
                 }
