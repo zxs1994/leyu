@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
                 // 过期且版本号匹配时，额外标记为过期，供刷新逻辑使用。
                 if (versionMatch && expiredToken) {
+                    log.debug("token expired");
                     request.setAttribute(AUTH_EXPIRED_ATTR, true);
                 }
             }

@@ -3,6 +3,7 @@ package com.xusheng94.leyu.admin.config.security;
 import com.xusheng94.leyu.common.config.IAuthLevelResolver;
 import com.xusheng94.leyu.common.ApiResponse;
 import com.xusheng94.leyu.admin.cache.SysPermissionCache;
+import com.xusheng94.leyu.admin.config.security.jwt.JwtAuthenticationFilter;
 import com.xusheng94.leyu.admin.entity.SysPermission;
 import com.xusheng94.leyu.common.enums.AuthLevel;
 import com.xusheng94.leyu.admin.mapper.SysPermissionMapper;
@@ -59,27 +60,32 @@ public class SysPermissionFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 3️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
+        // 3️⃣ access token 已过期时，统一返回 498 (刷新接口已在白名单)，触发前端刷新流程。
+        if (Boolean.TRUE.equals(request.getAttribute(JwtAuthenticationFilter.AUTH_EXPIRED_ATTR))) {
+            throw new AuthenticationCredentialsNotFoundException(null);
+        }
+
+        // 4️⃣ 需要登录（LOGIN_ONLY / NORMAL / PLATFORM_ONLY）
         if (!CurrentUser.isLogin()) {
             String message = ApiResponse.fail(HttpServletResponse.SC_UNAUTHORIZED).getMsg();
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
             throw new AuthenticationCredentialsNotFoundException(message);
         }
 
-        // 4️⃣ 平台专属接口：仅平台用户可访问
+        // 5️⃣ 平台专属接口：仅平台用户可访问
         if (authLevel == AuthLevel.PLATFORM_ONLY && !CurrentUser.isPlatformUser()) {
             String message = resolveForbiddenMessage(sysPermission);
             request.setAttribute(SysOperationLogFilter.OP_LOG_ERROR_MSG_ATTR, message);
             throw new AccessDeniedException(message);
         }
 
-        // 5️⃣ 登录即可
+        // 6️⃣ 登录即可
         if (authLevel == AuthLevel.LOGIN_ONLY) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 6️⃣ NORMAL：需要权限校验
+        // 7️⃣ NORMAL：需要权限校验
         Long userId = CurrentUser.getUserId();
         List<SysPermission> userPermissions = sysPermissionMapper.selectByUserId(userId);
 
