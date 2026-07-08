@@ -356,7 +356,6 @@ java -Xms512m -Xmx1g -jar target/leyue-1.0.0.jar --spring.profiles.active=prod
    - 分页：GET `/sys/permission/page?page=1&size=10`
 
 **使用建议**：
-   - 开发时可临时打开 `sys-permission.scan-on-startup: true` 来初始化或同步权限，**慎用**（可能覆盖已有权限数据）。
    - 扫描会排除 Swagger/OpenAPI 相关 Controller（类名包含 `swagger` 或 `openapi`）。
    - `security.whitelist-urls` 支持 Ant 风格路径（例如 `/public/**`）。
 
